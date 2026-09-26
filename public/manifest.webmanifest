@@ -1,0 +1,26 @@
+{
+  "name": "NIGHTFALL — Mafia Party Game",
+  "short_name": "NIGHTFALL",
+  "description": "Offline pass-and-play mafia. 4–12 players, one phone, zero mercy.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#07060d",
+  "theme_color": "#07060d",
+  "categories": ["games", "entertainment"],
+  "icons": [
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
