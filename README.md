@@ -37,22 +37,18 @@ npm run build    # outputs static site to dist/
 
 ## Deploy to GitHub Pages (free hosting)
 
-```bash
-git init
-git add .
-git commit -m "feat: NIGHTFALL — offline pass-and-play mafia PWA"
-git branch -M main
-git remote add origin https://github.com/<you>/nightfall.git
-git push -u origin main
-```
+The included GitHub Actions workflow builds and deploys the site whenever
+changes are pushed to `main`. To enable it:
 
-Then either:
+1. Open the repository's **Settings → Pages**.
+2. Under **Build and deployment**, choose **GitHub Actions** as the source.
+3. Push to `main` or run **Deploy to GitHub Pages** from the repository's
+   **Actions** tab.
 
-- **GitHub Actions (recommended):** add a workflow that runs `npm run build` and publishes `dist/` to Pages, or
-- **Manual:** `npm run build`, then push `dist/` to a `gh-pages` branch (`npx gh-pages -d dist`),
-- In **Settings → Pages**, pick your source branch. Done — HTTPS + PWA installability for $0.
-
-> If hosting under `https://<you>.github.io/nightfall/` set `base: './'` in `vite.config.ts` before building so asset URLs resolve relatively.
+The site will be available at
+`https://princesudaim.github.io/Mafia-offlline/` after the first successful
+workflow run. GitHub Pages provides HTTPS, which is required for PWA
+installation and service workers.
 
 ## Security note
 
