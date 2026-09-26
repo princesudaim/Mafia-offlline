@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Check, Shuffle } from "lucide-react";
 import { sfx } from "../lib/audio";
 import { AVATARS, avatarById, type AccessoryId, type AvatarDef } from "../lib/avatars";
@@ -91,6 +92,8 @@ export function PlayerAvatar({
   ring?: boolean;
 }) {
   const a = avatarById(avatarId);
+  const [failedImage, setFailedImage] = useState<string>();
+  const image = a.image && failedImage !== a.image ? a.image : undefined;
   const body = dead ? "#4b5160" : a.body;
   const shade = dead ? "#2c3038" : a.shade;
 
@@ -105,40 +108,58 @@ export function PlayerAvatar({
         boxShadow: ring && !dead ? `0 0 18px -4px ${a.body}` : undefined,
       }}
     >
-      <svg viewBox="-6 -8 112 118" width="100%" height="100%" aria-hidden>
-        {/* backpack */}
-        <rect x="6" y="44" width="18" height="36" rx="9" fill={shade} />
-        {/* body */}
-        <path
-          d="M30 40 C30 20 72 20 72 42 L72 76 C72 88 64 94 52 94 C38 94 30 88 30 76 Z"
-          fill={body}
-        />
-        {/* legs */}
-        <path d="M34 90 L34 104 C34 108 46 108 46 104 L46 92 Z" fill={body} />
-        <path d="M58 92 L58 104 C58 108 70 108 70 104 L70 90 Z" fill={shade} />
-        {/* visor */}
-        <path
-          d="M44 34 C62 30 80 36 80 46 C80 56 62 60 46 55 C38 52 36 37 44 34 Z"
-          fill={dead ? "#6b7280" : "#bfe6ff"}
-        />
-        <path
-          d="M48 36 C58 33 70 36 72 41 C64 38 54 38 48 41 Z"
-          fill="#ffffff"
-          opacity="0.75"
-        />
-        {/* shading */}
-        <path
-          d="M30 60 C36 66 40 80 38 94 C33 92 30 86 30 76 Z"
-          fill={shade}
-          opacity="0.55"
-        />
-        <Accessory kind={a.accessory} a={{ ...a, body, shade }} />
-        {dead && (
-          <g stroke="#ff2d55" strokeWidth="6" strokeLinecap="round">
-            <path d="M22 26 L82 92" />
-          </g>
-        )}
-      </svg>
+      {image ? (
+        <>
+          <img
+            src={image}
+            alt=""
+            aria-hidden
+            draggable={false}
+            onError={() => setFailedImage(image)}
+            className={cn("h-full w-full object-cover", dead && "grayscale brightness-50")}
+          />
+          {dead && (
+            <svg className="absolute inset-0" viewBox="-6 -8 112 118" width="100%" height="100%" aria-hidden>
+              <path d="M22 26 L82 92" stroke="#ff2d55" strokeWidth="6" strokeLinecap="round" />
+            </svg>
+          )}
+        </>
+      ) : (
+        <svg viewBox="-6 -8 112 118" width="100%" height="100%" aria-hidden>
+          {/* backpack */}
+          <rect x="6" y="44" width="18" height="36" rx="9" fill={shade} />
+          {/* body */}
+          <path
+            d="M30 40 C30 20 72 20 72 42 L72 76 C72 88 64 94 52 94 C38 94 30 88 30 76 Z"
+            fill={body}
+          />
+          {/* legs */}
+          <path d="M34 90 L34 104 C34 108 46 108 46 104 L46 92 Z" fill={body} />
+          <path d="M58 92 L58 104 C58 108 70 108 70 104 L70 90 Z" fill={shade} />
+          {/* visor */}
+          <path
+            d="M44 34 C62 30 80 36 80 46 C80 56 62 60 46 55 C38 52 36 37 44 34 Z"
+            fill={dead ? "#6b7280" : "#bfe6ff"}
+          />
+          <path
+            d="M48 36 C58 33 70 36 72 41 C64 38 54 38 48 41 Z"
+            fill="#ffffff"
+            opacity="0.75"
+          />
+          {/* shading */}
+          <path
+            d="M30 60 C36 66 40 80 38 94 C33 92 30 86 30 76 Z"
+            fill={shade}
+            opacity="0.55"
+          />
+          <Accessory kind={a.accessory} a={{ ...a, body, shade }} />
+          {dead && (
+            <g stroke="#ff2d55" strokeWidth="6" strokeLinecap="round">
+              <path d="M22 26 L82 92" />
+            </g>
+          )}
+        </svg>
+      )}
     </div>
   );
 }

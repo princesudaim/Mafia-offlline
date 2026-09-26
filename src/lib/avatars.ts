@@ -22,7 +22,10 @@ export interface AvatarDef {
   shade: string;
   accessory: AccessoryId;
   accent: string;
+  image?: string;
 }
+
+const HASHED_AVATAR_COUNT = 12;
 
 export const AVATARS: AvatarDef[] = [
   { id: 0, name: "Scarlet", body: "#ff3b5c", shade: "#c01c3a", accessory: "none", accent: "#ffd1da" },
@@ -37,6 +40,10 @@ export const AVATARS: AvatarDef[] = [
   { id: 9, name: "Dusk", body: "#f472b6", shade: "#b83e84", accessory: "headphones", accent: "#ffd9ee" },
   { id: 10, name: "Rust", body: "#fb923c", shade: "#c05e12", accessory: "bandage", accent: "#ffe2c7" },
   { id: 11, name: "Shadow", body: "#4b5563", shade: "#242a34", accessory: "visorshade", accent: "#cbd2dd" },
+  { id: 12, name: "Photo 1", body: "#e879f9", shade: "#a21caf", accessory: "none", accent: "#fae8ff", image: "./avatars/crew-12.jpg" },
+  { id: 13, name: "Photo 2", body: "#60a5fa", shade: "#1d4ed8", accessory: "none", accent: "#dbeafe", image: "./avatars/crew-13.jpg" },
+  { id: 14, name: "Photo 3", body: "#fb7185", shade: "#be123c", accessory: "none", accent: "#ffe4e6", image: "./avatars/crew-14.jpg" },
+  { id: 15, name: "Photo 4", body: "#facc15", shade: "#a16207", accessory: "none", accent: "#fef9c3", image: "./avatars/crew-15.png" },
 ];
 
 export function avatarById(id: number): AvatarDef {
@@ -47,7 +54,7 @@ export function avatarById(id: number): AvatarDef {
 export function hashToAvatar(name: string): number {
   let h = 0;
   for (let i = 0; i < name.length; i++) h = (h * 31 + name.charCodeAt(i)) >>> 0;
-  return h % AVATARS.length;
+  return h % HASHED_AVATAR_COUNT;
 }
 
 /* ------------------------- persistence (per name) ------------------------ */
