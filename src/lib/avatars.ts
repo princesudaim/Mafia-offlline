@@ -1,5 +1,4 @@
-/* NIGHTFALL avatars — 12 crewmate-style characters drawn as pure inline SVG.
-   No image files, no CDN, no base64: 100% offline and a few bytes each. */
+/* NIGHTFALL avatars — 12 inline SVG crewmates and four image-based choices. */
 
 export type AccessoryId =
   | "none"

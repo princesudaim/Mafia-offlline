@@ -185,7 +185,7 @@ export function AvatarPicker({
       onClick={onClose}
     >
       <div
-        className="glass anim-card-in w-full max-w-sm rounded-3xl p-5"
+        className="glass anim-card-in max-h-[calc(100dvh-2rem)] w-full max-w-sm overflow-y-auto overscroll-contain rounded-3xl p-5"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center gap-3">
