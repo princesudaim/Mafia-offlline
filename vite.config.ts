@@ -1,4 +1,6 @@
 import path from "path";
+import { createHash } from "node:crypto";
+import { readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { fileURLToPath } from "url";
 import tailwindcss from "@tailwindcss/vite";
 import react from "@vitejs/plugin-react";
@@ -11,7 +13,30 @@ const __dirname = path.dirname(__filename);
 // https://vite.dev/config/
 export default defineConfig({
   base: "./",
-  plugins: [react(), tailwindcss(), viteSingleFile()],
+  server: { allowedHosts: [".e2b.app"] },
+  plugins: [react(), tailwindcss(), viteSingleFile(), {
+    name: "version-offline-shell",
+    apply: "build",
+    closeBundle() {
+      // Include every published asset so image/manifest-only edits refresh the cache too.
+      const output = path.resolve(__dirname, "dist");
+      const hash = createHash("sha256");
+      const hashDirectory = (directory: string) => {
+        for (const entry of readdirSync(directory, { withFileTypes: true }).sort((a, b) => a.name.localeCompare(b.name))) {
+          const file = path.join(directory, entry.name);
+          if (entry.isDirectory()) hashDirectory(file);
+          else if (file !== path.join(output, "sw.js")) {
+            hash.update(path.relative(output, file));
+            hash.update(readFileSync(file));
+          }
+        }
+      };
+      hashDirectory(output);
+      const revision = hash.digest("hex").slice(0, 12);
+      const worker = path.resolve(__dirname, "dist/sw.js");
+      writeFileSync(worker, readFileSync(worker, "utf8").replace("__BUILD_REVISION__", revision));
+    },
+  }],
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "src"),

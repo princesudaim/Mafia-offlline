@@ -1,62 +1,33 @@
-/* NIGHTFALL service worker — zero-dependency offline shell */
-const CACHE = "nightfall-v2";
+/* Offline shell. The build replaces this revision whenever the app changes. */
+const PREFIX = "nightfall-shell-";
+const CACHE = PREFIX + "__BUILD_REVISION__";
 const CORE = [
-  "./",
-  "index.html",
-  "manifest.webmanifest",
-  "icons/icon-512.png",
-  "avatars/crew-12.jpg",
-  "avatars/crew-13.jpg",
-  "avatars/crew-14.jpg",
-  "avatars/crew-15.png",
+  "./", "index.html", "manifest.webmanifest", "icons/icon-512.png",
+  "avatars/crew-12.jpg", "avatars/crew-13.jpg", "avatars/crew-14.jpg", "avatars/crew-15.png",
 ];
 
-self.addEventListener("install", (e) => {
-  e.waitUntil(caches.open(CACHE).then((c) => c.addAll(CORE)));
-  self.skipWaiting();
+self.addEventListener("install", (event) => {
+  event.waitUntil(caches.open(CACHE).then((cache) => cache.addAll(CORE)));
 });
 
-self.addEventListener("activate", (e) => {
-  e.waitUntil(
-    caches.keys().then((keys) =>
-      Promise.all(keys.filter((k) => k !== CACHE).map((k) => caches.delete(k)))
-    )
-  );
-  self.clients.claim();
+self.addEventListener("activate", (event) => {
+  event.waitUntil((async () => {
+    const keys = await caches.keys();
+    await Promise.all(keys.filter((key) => key.startsWith(PREFIX) && key !== CACHE).map((key) => caches.delete(key)));
+    // Remove the old unversioned cache used by previous releases of this game.
+    await caches.delete("nightfall-v2");
+    await self.clients.claim();
+  })());
 });
 
-self.addEventListener("fetch", (e) => {
-  const req = e.request;
-  if (req.method !== "GET") return;
+self.addEventListener("fetch", (event) => {
+  const request = event.request;
+  const url = new URL(request.url);
+  if (request.method !== "GET" || url.origin !== self.location.origin) return;
 
-  if (req.mode === "navigate") {
-    e.respondWith(
-      fetch(req)
-        .then((res) => {
-          if (res.ok) {
-            const clone = res.clone();
-            caches.open(CACHE).then((c) => c.put(req, clone));
-          }
-          return res;
-        })
-        .catch(() => caches.match(req).then((hit) => hit || caches.match("./index.html")))
-    );
+  if (request.mode === "navigate") {
+    event.respondWith(fetch(request).catch(async () => (await caches.match("./index.html")) || Response.error()));
     return;
   }
-
-  e.respondWith(
-    caches.match(req, { ignoreSearch: true }).then(
-      (hit) =>
-        hit ||
-        fetch(req)
-          .then((res) => {
-            if (res && res.ok && new URL(req.url).origin === self.location.origin) {
-              const clone = res.clone();
-              caches.open(CACHE).then((c) => c.put(req, clone));
-            }
-            return res;
-          })
-          .catch(() => caches.match("./index.html"))
-    )
-  );
+  event.respondWith(caches.match(request).then((cached) => cached || fetch(request)));
 });

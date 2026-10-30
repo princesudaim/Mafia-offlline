@@ -1,7 +1,9 @@
 # NIGHTFALL — Mafia Party Game (PWA)
 
 An offline, single-device (**pass-and-play**) social deduction game. One phone, 4–12 players, zero mercy.
-No accounts, no servers, no tracking — 100% client-side.
+No accounts, no servers, no tracking — 100% client-side. All currently implemented roles and settings are free; there are no purchases or premium features.
+
+This is an existing Mafia game, **not yet a complete recreation of the Werewolf APK**. The complete APK set contains compiled Flutter game logic, not the original source; see [APK_INSPECTION.md](APK_INSPECTION.md). More work is needed to reconstruct and verify the roles and rules.
 
 ## Stack ($0)
 
@@ -44,6 +46,8 @@ changes are pushed to `main`. To enable it:
 2. Under **Build and deployment**, choose **GitHub Actions** as the source.
 3. Push to `main` or run **Deploy to GitHub Pages** from the repository's
    **Actions** tab.
+
+After the first online visit, wait for the service worker to install before going offline. Updates activate after all open tabs of the game are closed. Install via your browser’s Add to Home Screen / Install menu.
 
 The site will be available at
 `https://princesudaim.github.io/Mafia-offlline/` after the first successful

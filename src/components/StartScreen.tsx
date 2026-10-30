@@ -199,7 +199,7 @@ export default function StartScreen({
       </Card>
 
       <p className="mt-6 text-center text-[10px] tracking-[0.2em] text-dim/50">
-        WORKS OFFLINE · ADD TO HOME SCREEN · v1.0
+        FREE TO PLAY · NO PREMIUM · WORKS OFFLINE
       </p>
 
       {manual && <HowToPlay onClose={() => setManual(false)} />}
