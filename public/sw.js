@@ -2,8 +2,27 @@
 const PREFIX = "nightfall-shell-";
 const CACHE = PREFIX + "__BUILD_REVISION__";
 const CORE = [
-  "./", "index.html", "manifest.webmanifest", "icons/icon-512.png",
-  "avatars/crew-12.jpg", "avatars/crew-13.jpg", "avatars/crew-14.jpg", "avatars/crew-15.png",
+  "./", "index.html", "manifest.webmanifest", "icons/werewolf-512.png",
+  "werewolf/home.png", "werewolf/night.png", "werewolf/day.png",
+  "werewolf/werewolf.webp", "werewolf/villager.webp", "werewolf/doctor.webp", "werewolf/seer.webp", "werewolf/chef.webp", "werewolf/mayor.webp", "werewolf/templar.webp", "werewolf/muted.webp", "werewolf/jester.webp", "werewolf/necromancer.webp", "werewolf/bodyguard.webp", "werewolf/sheriff.webp", "werewolf/serialkiller.webp", "werewolf/visitor.webp", "werewolf/survivor.webp", "werewolf/psychic.webp", "werewolf/celebrity.webp", "werewolf/detective.webp", "werewolf/instigator.webp", "werewolf/strongwolf.webp", "werewolf/sickman.webp", "werewolf/lonewolf.webp", "werewolf/wolfpup.webp", "werewolf/journalist.webp", "werewolf/raven.webp", "werewolf/rabidwolf.webp", "werewolf/whitewolf.webp", "werewolf/gambler.webp", "werewolf/mindflayer.webp", "werewolf/intelligence.webp", "werewolf/thief.webp", "werewolf/police.webp", "werewolf/hypnowolf.webp", "werewolf/charmer.webp",
+  "werewolf/barlow.ttf", "werewolf/condensed.ttf",
+  "werewolf/audio/night.mp3", "werewolf/audio/day.mp3", "werewolf/audio/vote.mp3",
+  "werewolf/avatars/player1.webp",
+  "werewolf/avatars/player2.webp",
+  "werewolf/avatars/player3.webp",
+  "werewolf/avatars/player4.webp",
+  "werewolf/avatars/player5.webp",
+  "werewolf/avatars/player7.webp",
+  "werewolf/avatars/player8.webp",
+  "werewolf/avatars/player9.webp",
+  "werewolf/avatars/player11.webp",
+  "werewolf/avatars/player13.webp",
+  "werewolf/avatars/player15.webp",
+  "werewolf/avatars/player16.webp",
+  "werewolf/avatars/player17.webp",
+  "werewolf/avatars/player18.webp",
+  "werewolf/avatars/player19.webp",
+
 ];
 
 self.addEventListener("install", (event) => {

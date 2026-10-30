@@ -6,7 +6,7 @@ The Drive archive `were.zip` contains `base.apk`, an arm64 split, language and d
 - arm64 split SHA-256: `d50e11a75fce64f7448ad9fa9cb8d789049f961c6f1368c765a12c2ce40b457b`
 - The base APK includes role illustrations, audio, and other Flutter assets.
 - The Flutter Dart application is ahead-of-time compiled into ARM64 native code, not the original Dart source. Strings and asset names can be recovered, but do not by themselves describe complete implementation or interaction rules. A native APK cannot simply be deployed to GitHub Pages as a PWA.
-- This repository currently contains a separate Mafia PWA; it is not an exact recreation. Do not deploy it as the recovered Werewolf game.
+- The repository now has an incomplete Werewolf PWA reconstruction alongside the prior Mafia source. It is not an exact recreation and is not ready to deploy as the recovered full game.
 
 ## Role-action names found in compiled code
 
@@ -35,3 +35,82 @@ These are strings from the binary, not proof of the complete behavior. Some rule
 ## Next steps
 
 Reconstruct game flow and role interactions from the native code and observed game behavior; design and implement equivalent web state, UI, assets, and offline storage; test each role and interaction against the original before publishing. A build signed for Android cannot run directly in a browser. Screenshots, recordings, or access to the original running game would help verify fidelity.
+
+## Video reference observations
+
+Reviewed sampled frames from `game 1.mp4` and `game 4.mp4` through `game 7.mp4`. Parts 2 and 3 exceeded the Drive connector's 100 MiB download limit and were not reviewed. The footage does not show the entire game, so these observations do not establish all rules.
+
+- The rulebook describes a single-phone, offline, pass-and-play game for 4–24 players with night, day, and voting phases. Roles are selected and randomly assigned.
+- The home screen uses a moonlit village illustration, orange buttons, a rulebook, and language selection. Adding a player includes a name and options for game avatars, gallery, or camera, with an option to save to a player library.
+- At night the phone is passed individually. The private screen shows role artwork and description, a player grid when a target is required, and a complete-action or skip button. A Seer result displays the target's role; a Chef selects two players and sees whether their teams match. A first-night Werewolf screen says the player cannot use their role that night and can meet teammates.
+- The footage shows a Doctor description stating the same player cannot be protected on consecutive nights and self-protection is allowed. One role-action screen shows a special madman disclosure, but the footage does not establish its full mechanics.
+- The morning screen reports deaths or no deaths; a discussion screen shows a timer, an add-one-minute control, and an end-discussion button. The vote is passed around player by player; a voter may select a living player or skip. A shown result with three skips and three votes for one player reports that skip wins and no one is executed. A later screen shows a village execution with the player's role revealed.
+- The original video includes ads; these should not be replicated in the requested free version.
+
+### Additional split clips
+
+Sampled both uploaded `game 2` segments and the second `game 3` segment. These show the player library and role-selection screen: individual counts per role, a selected-role total matching the number of players, and game settings including role reveal on death, secret voting, skip votes, no first-night kill, passive-role wait time, randomized distribution, and madmen. The original marks some options and roles as premium or ad-gated; those gates are not requirements for the requested free game. Some clip timestamps and displayed content don't align neatly, so the complete ordering needs confirmation. The first `game 3` segment remained too large to download and has not been reviewed.
+
+### Detailed frame review
+
+Extracted 50 evenly spaced frames from each accessible video: Game 1, both Game 2 segments, Game 3 New 4, and Games 4–7 (400 frames total). `Game 3 New 3` is still over the download limit; the unsplit Games 2 and 3 are also over it. These frames show player library, avatar picker, game settings, role counts, pass screens, private night actions, discussion and individual voting, but do not demonstrate all premium roles or their interactions. The app labels the tie against a skip as “skip wins” and does not execute anyone. A language picker and all-time rankings are also shown. The language picker remains unimplemented; a local reconstruction of rankings was added later.
+
+### Rechecked compiled role text
+
+The ARM64 library contains English descriptions for additional mechanics, including a Jester that wins when executed, and a Necromancer with one revival. These descriptions do not recover all timing, team assignment, interaction ordering or implementation details. The PWA implements these two roles as a provisional reconstruction; the Necromancer is provisionally assigned to the village. Many original roles still require implementation and verification.
+
+### Raven reconstruction
+
+The binary states that the Raven marks a player or triggers the curse, and that a marked attacker dies instead when attempting to kill the Raven. The web version adds this role with private target selection, dawn curse activation and attacker reflection. Its neutral alignment, lone-survivor victory, pack-attack handling, protection precedence, and timing are provisional; the recovered text alone does not verify them.
+
+### Rabid Werewolf reconstruction
+
+The compiled description says this role infects and converts a player on the first night and votes with the pack afterward. In the PWA, infections resolve after night deaths/revivals; only living non-wolves are converted and the resulting role is Werewolf. The player sees a private notice on their next night turn. Eligibility, protection, timing, and the effects on other neutral roles are provisional.
+
+### White Werewolf reconstruction
+
+The compiled description says the White Werewolf appears as a Werewolf, votes with the pack, loses if the werewolves win, and aims to be the last player alive. The user clarified that White Werewolf is a neutral role, not a Werewolves-section role. The PWA shows this role to the pack as a teammate, presents it as Werewolf to the Seer, allows its pack ballot to target other known wolves, and treats it as a separate threat for victory. These choices, especially betrayal targeting and the exact parity/win precedence, have not been verified against the original game.
+
+### Gambler reconstruction
+
+The compiled description says a Gambler may bet on the next execution, is protected on gambling nights, escapes after two correct predictions, and faces creditors on the next night after a wrong prediction unless saved. The binary also says “If you survive tonight, you'll escape in the morning!” The PWA therefore prepares the Gambler after a second correct prediction and escapes them at the next dawn only if they survive and remain an unpaired Gambler. A tied/skip vote counts as a wrong guess, a Doctor prevents the one-time debt death, and the escape is publicly announced. Escape/conversion precedence, debt interactions and tie handling remain provisional.
+
+### Mind Flayer reconstruction
+
+The compiled role description says the Mind Flayer wins when all other living players are parasitized, and skipping has a 20% chance to generate another parasite. A separate onboarding quote instead mentions controlling a majority, so the exact original victory condition needs verification. The PWA follows the role description, provisionally starts with three parasites, and applies wins after night resolution or voting. Stock, timing, simultaneous wins, and interaction precedence are unverified.
+
+### Intelligence Chief reconstruction
+
+The binary says this villager gets potentially inaccurate intel every two nights, and another string says one of the named players may be a Werewolf or neutral. The PWA gives a private report on even-numbered nights. Its 50% guaranteed-threat selection, random alternative, candidate eligibility, timing, and handling when there are fewer than two candidates are provisional; the source strings do not specify the actual algorithm.
+
+### Thief reconstruction
+
+The recovered English text describes a neutral Thief who kills a player and steals their role to join their team. The PWA resolves the attack with other night kills and, if both Thief survives and target dies, applies the target’s original role after night resolution. The PWA provisionally blocks first-night theft when first-night safety is enabled, resets role-specific resources rather than inheriting the target's usage, treats a lone Thief as a draw, and keeps the game running while a Thief is alive. Protection, simultaneous kills and attribution, resource inheritance, and win precedence remain unverified.
+
+### Police and Hypnotist Werewolf reconstruction
+
+The original descriptions say Police blocks a player and cannot pick the same target on consecutive nights; Hypnotist Werewolf votes with the pack and once per game corrupts a villager at the end of the night. The PWA resolves detentions silently with other night actions, without a preliminary pass or informing the target. When Police is in play, information roles receive their results privately on the next turn so a later detention can cancel the report. Multiple simultaneous police actions and exact block precedence are provisional. Hypnosis preserves the displayed role, causes actions to fail or some information roles to produce random results, and consumes limited uses where applicable. The original madman behaviors, including individual role interactions and probabilities, are not fully recovered or verified.
+
+### Charmer reconstruction
+
+Recovered text says a Charmer chooses a lover and forms an independent Lovers team, which wins when all opponents are eliminated even if only one partner remains. It also says lovers cannot attack or kill each other. The PWA applies these constraints to night attacks and voting, announces the bond privately on each partner's turn, and keeps their original role abilities. Multiple-couple handling, the timing of partner recognition, team-based abilities and competition with other neutral victories are provisional and need original-game verification.
+
+### Madman game setting reconstruction
+
+The compiled strings describe Madmen as a separate game setting rather than normal role selection. They see a disguised role, have ineffective or misleading abilities, and are not informed until game over; villagers and silent roles are ineligible. The PWA selects eligible village players after dealing and reuses the provisional Hypnotist-corruption behaviors. It shows the Madman designation only in the end-game role list. Counts, eligibility of particular village roles, protection from Sheriff bullets, and role-by-role failure behavior require verification against the original.
+
+### Passive-role wait reconstruction
+
+The settings footage describes “Wait time for passive roles”: Villager, Jester and similar roles cannot skip immediately. The PWA adds an optional five-second wait on Villager, Muted, Jester, Celebrity and Sick Man turns. The exact original duration, default and complete list of affected roles are not verified; the default here is off. This setting does not add an extra role reveal or Police check.
+
+### Random Distribution reconstruction
+
+Footage describes “Random Distribution” as “Distribute roles automatically.” The PWA now uses the user-provided Brute Force Lab video (https://www.youtube.com/watch?v=9hKL5cwnM8Q) as its lineup reference: 6–8 players get one Werewolf and no Seer; 9–16 get two Werewolves and a Seer; remaining roles are Villagers. We extrapolate those nearest brackets to 4–5 and 17–24 without assuming equivalent balance. The video models a basic game, not this PWA’s extra roles. Roles can still be edited and are randomly assigned to players. A Madman count above the number of eligible roles requires manual changes. The original APK distribution algorithm remains unknown. The role-selection screen still opens empty unless the player chooses this button.
+
+### All-time rankings reconstruction
+
+The footage shows an empty all-time rankings screen but does not establish its scoring or identity rules. The PWA counts completed games and wins locally by normalized player name, orders by wins then games played, and credits the winning faction, individual neutral winners, escaped Gamblers, surviving Survivors and winning Lovers. Abandoned games are not counted. These details are provisional; renaming a player creates a separate record and no data is synced across devices.
+
+### Recovered phase audio
+
+The base APK contains three MP3 assets named for night, morning and voting. The PWA caches them for offline use and offers an optional sound setting, initially off, plus an in-game mute control. It loops the relevant track during each phase as a provisional reconstruction; the original playback timing and volume have not been verified. Mobile browsers may require a user tap to permit playback.

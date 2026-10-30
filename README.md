@@ -1,59 +1,31 @@
-# NIGHTFALL — Mafia Party Game (PWA)
+# Werewolf — offline party game PWA
 
-An offline, single-device (**pass-and-play**) social deduction game. One phone, 4–12 players, zero mercy.
-No accounts, no servers, no tracking — 100% client-side. All currently implemented roles and settings are free; there are no purchases or premium features.
+A work-in-progress, free and ad-free, single-phone pass-and-play Werewolf game for 4–24 players. The app runs in the browser with no account or server. After its first successful online load, the PWA caches the game and its artwork for offline play. Names and settings are stored on the device; an in-progress game is not saved if the page is reloaded.
 
-This is an existing Mafia game, **not yet a complete recreation of the Werewolf APK**. The complete APK set contains compiled Flutter game logic, not the original source; see [APK_INSPECTION.md](APK_INSPECTION.md). More work is needed to reconstruct and verify the roles and rules.
+## What is implemented
 
-## Stack ($0)
+- Mobile-styled player roster with a delete mode and bottom sheets for game avatars, gallery and camera. Player library with selectable saved names, editing and removal; 15 built-in avatars recovered from the APK; camera/gallery photos (browser support and permission required). Photos are cropped and stored locally. Only one current player can use each avatar; choosing one already in use assigns its previous owner a random unused built-in avatar. If all 15 are occupied, the displaced player uses initials. Browser storage limits apply.
+- Local all-time rankings in the player library: completed games and wins are tracked by player name on this device. Renamed players create separate records; the scoring is a reconstruction and is not synced.
+- Role selection grouped into Villagers, Werewolves and Neutrals starts with no roles selected. The Start button and selected-player count remain visible while scrolling. Only implemented roles are listed; tap a role to view its description. Role-specific settings are not implemented yet. Police detentions resolve silently at the end of the night; when Police is in play, private investigation results appear on the investigator’s next turn.
+- Optional video-inspired basic lineup (1 Werewolf for 4–8 players; 2 Werewolves and a Seer for 9–24, with 4–5 and 17–24 extrapolated), random assignment to players, configurable role counts and settings for revealing roles on death, secret voting, skip votes, first-night safety, discussion time, optional passive-role wait, and an optional Madman count. The passive-role wait is provisionally five seconds for Villager, Muted, Jester, Celebrity and Sick Man.
+- Thirty-four roles: Werewolf, Villager, Doctor, Seer, Chef, Mayor, Templar, Muted, Jester, Necromancer, Bodyguard, Sheriff, Serial Killer, Visitor, Survivor, Psychic, Celebrity, Detective, Instigator, Strong Werewolf, Sick Man, Lone Werewolf, Wolf Pup, Journalist, Raven, Rabid Werewolf, White Werewolf, Gambler, Mind Flayer, Intelligence Chief, Thief, Police, Hypnotist Werewolf and Charmer. Private pass-the-phone turns, doctor protection, seer investigations, chef team comparison, mayor assembly, templar holy water, bodyguard protection, sheriff shooting, wolf voting, Journalist headlines and drawings, morning reports, timed discussion (including time elapsed while the app is backgrounded), individual voting, execution and win conditions. The next voting screen opens immediately after each vote; pass the phone to the named player.
+- Optional, locally cached night, day and voting audio recovered from the APK. Sounds default to off and can be toggled during a game; a phone may require a tap before allowing playback.
+- No ads, purchases, accounts or premium gates.
 
-- **React 19 + Vite + Tailwind CSS v4**
-- **localStorage** — settings, saved names & the local Hall of Legends
-- **Hand-rolled PWA** — `manifest.webmanifest` + `sw.js` (no plugins), fully installable & offline after first visit
-- **Lucide icons** — free SVG icon set
-- **Google Fonts CDN** — Unbounded + Space Grotesk
-- **Zero media files** — all juice is pure CSS keyframes, a Canvas particle engine, and WebAudio-synthesized SFX
+This is **not a complete or verified recreation of the Android game**. The Android release contains many additional roles, settings, languages, artwork, player-library features and interactions that are not implemented here. Video parts are incomplete and the original Dart source is unavailable. The following are explicit reconstruction choices, not verified original rules: wolf vote ties and village vote ties cause no death; wolves win at parity; players cannot vote for themselves; ordinary wolf votes cannot target known packmates (the White Werewolf can betray them), the Necromancer is assigned to the village, and the sheriffs have one bullet, Instigator team assignment and visit-tracking interaction details, Psychic team mapping, celebrity reveal timing, Wolf Pup multi-target voting and ties, Lone Werewolf protection and action precedence, Sick Man revival behavior, Strong Werewolf interactions, serial-killer and Mind Flayer win precedence, the interaction between hypnosis and role conversion, and the timing of simultaneous protection, visits, attacks and revival are reconstructed rather than verified. See [APK_INSPECTION.md](APK_INSPECTION.md) for the inspection and video observations. Do not claim 100% parity.
 
-## The Rules (default)
+## Run and test
 
-- **4–12 players** — dynamic roster, host picks imposter count (1–3)
-- **Any number of each town power** — 0–4 Doctors, Detectives and Sheriffs, each with its own **spawn chance** (25/50/75/100%). Every slot rolls independently, so "2 Doctors at 50%" might deal 0, 1 or 2. Leftover seats become Crewmates; fill every seat and nobody is a plain Crewmate
-- **Imposters** — each sees their partner(s) on their role card. At night, Agent 1 marks a target; Agent 2 sees the mark and picks. Same mark = guaranteed elimination · split marks = **50/50 coin flip** · solo imposter = guaranteed
-- **Doctor** — one shield per night. Self-heal allowed **once per game** (configurable). Any doctor covering the marked player fully neutralizes the kill
-- **Detective** — inspect one player per night → instant **IMPOSTER / INNOCENT**
-- **Sheriff** — night bullet. Hit an imposter and they die. Hit an innocent and the **sheriff dies of guilt** (1 bullet per game by default; per-night mode available)
-- **Leak-proof audio** — every role reveal and night action plays the *same* sound and haptic, so nobody can identify the imposter by ear. All role flavour is visual only (the holder is the only one looking at the screen)
-- **Day Phase** — configurable deliberation timer (default 2:00), then a host-locked verdict panel: eject or skip
-- **Reveals** — ejected players' roles stay classified by default; night deaths reveal. Both toggleable
-- **Win** — Town: eliminate every imposter · Imposters: reach parity with the town
-
-Everything above is live-configurable in **Settings** — even mid-match from the pause menu.
-
-## Run it
-
-```bash
-npm install
-npm run dev      # local dev
-npm run build    # outputs static site to dist/
+```sh
+npm ci
+npm run dev
+npm run build
+npx tsc --noEmit
+npm test
 ```
 
-## Deploy to GitHub Pages (free hosting)
+Optional browser smoke test: run `npm run preview -- --host 127.0.0.1 --port 5180` in one terminal, then `CHROMIUM_PATH=/path/to/chromium npm run test:browser` in another. The test uses a fresh browser context and checks 320px and 390px mobile layouts, scrolling, touch target sizes, offline loading, drawing and voting.
 
-The included GitHub Actions workflow builds and deploys the site whenever
-changes are pushed to `main`. To enable it:
+Requires Node.js 22 or later. GitHub Actions is configured to deploy `dist/` to GitHub Pages when changes reach `main`; enable **Settings → Pages → GitHub Actions**. This branch is not automatically published. Visit the deployed site online first and wait for its service worker to install before going offline. Updates activate after all tabs of the app close. Browser install menus can add the PWA to the home screen.
 
-1. Open the repository's **Settings → Pages**.
-2. Under **Build and deployment**, choose **GitHub Actions** as the source.
-3. Push to `main` or run **Deploy to GitHub Pages** from the repository's
-   **Actions** tab.
-
-After the first online visit, wait for the service worker to install before going offline. Updates activate after all open tabs of the game are closed. Install via your browser’s Add to Home Screen / Install menu.
-
-The site will be available at
-`https://princesudaim.github.io/Mafia-offlline/` after the first successful
-workflow run. GitHub Pages provides HTTPS, which is required for PWA
-installation and service workers.
-
-## Security note
-
-Never commit GitHub tokens into a repo or client bundle — if a personal access token has been pasted anywhere public, revoke it and mint a new one at **GitHub → Settings → Developer settings → Tokens**.
+The original APK's artwork and fonts were supplied by the project owner for the reconstruction. The original Mafia implementation remains in the repository but is no longer the application entry point.
