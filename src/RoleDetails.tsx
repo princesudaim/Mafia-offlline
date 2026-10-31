@@ -13,12 +13,18 @@ export default function RoleDetails({ role, roleList, settings, celebritySkin, o
   const current = roleList[index];
   const details = roles[current];
   const move = (direction:number) => setIndex(i=>Math.max(0,Math.min(roleList.length-1,i+direction)));
+  // A swipe that starts on a control belongs to that control, not the role browser.
+  const isInteractive = (target: EventTarget | null) => {
+    const element = target as Element | null;
+    return typeof element?.closest === 'function' && !!element.closest('input, button, select, textarea, summary, [contenteditable="true"]');
+  };
 
   useEffect(() => { if (dialog.current && !dialog.current.open) dialog.current.showModal(); }, []);
 
   return <dialog ref={dialog} className={`role-details role-detail-${details.team}`} aria-labelledby="role-details-title" aria-describedby="role-details-description" onClose={onClose}
-    onKeyDown={event=>{if(event.key==='ArrowLeft') move(-1);if(event.key==='ArrowRight') move(1);}}
-    onTouchStart={event=>{const t=event.touches[0];gesture.current={x:t.clientX,y:t.clientY};}}
+    onKeyDown={event=>{if(isInteractive(event.target))return;if(event.key==='ArrowLeft') move(-1);if(event.key==='ArrowRight') move(1);}}
+    onTouchStart={event=>{if(isInteractive(event.target)){gesture.current=null;return;}const t=event.touches[0];gesture.current=t?{x:t.clientX,y:t.clientY}:null;}}
+    onTouchCancel={()=>{gesture.current=null;}}
     onTouchEnd={event=>{const start=gesture.current;gesture.current=null;const end=event.changedTouches[0];if(!start||!end)return;const dx=end.clientX-start.x,dy=end.clientY-start.y;if(Math.abs(dx)>55 && Math.abs(dx)>Math.abs(dy)*1.5) move(dx<0?1:-1);}}>
     <div className="role-detail-top"><button type="button" className="role-details-close" aria-label="Close role details" onClick={()=>dialog.current?.close()}><ArrowLeft size={22}/></button><strong>{index+1} / {roleList.length}</strong></div>
     <div className="role-detail-body"><div className="role-detail-frame">

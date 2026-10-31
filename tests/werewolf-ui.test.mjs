@@ -1753,3 +1753,20 @@ test('distribution explains when all Neutral chances are zero in a five-player g
  ui.fireEvent.click(ui.screen.getByRole('checkbox',{name:'Distribution follows role chances'}));click('BALANCED Even matchup');
  assert.equal(ui.screen.queryByRole('alert'),null);assert.match(ui.screen.getByRole('button',{name:/START GAME/}).textContent,/5 \/ 5/);
 });
+
+test('dragging the chance slider does not swipe to another role or reset the value',()=>{
+ startSetup(['A','B','C','D'],{},false);
+ click('View Doctor details');ui.fireEvent.click(ui.screen.getByText('ROLE SETTINGS'));
+ const slider=ui.screen.getByRole('slider',{name:'Doctor random role chance'});
+ ui.fireEvent.touchStart(slider,{touches:[{clientX:280,clientY:400}]});
+ ui.fireEvent.change(slider,{target:{value:'30'}});
+ ui.fireEvent.touchEnd(slider,{changedTouches:[{clientX:100,clientY:400}]});
+ assert.ok(ui.screen.getByRole('heading',{name:'DOCTOR'}));assert.equal(slider.value,'30');
+ assert.equal(JSON.parse(localStorage.getItem('werewolf.settings')).roleChances.doctor,30);
+ ui.fireEvent.keyDown(slider,{key:'ArrowRight'});assert.ok(ui.screen.getByRole('heading',{name:'DOCTOR'}));
+ const image=ui.screen.getByAltText('Doctor role artwork');
+ ui.fireEvent.touchStart(image,{touches:[{clientX:280,clientY:250}]});
+ ui.fireEvent.touchEnd(image,{changedTouches:[{clientX:100,clientY:250}]});
+ assert.equal(ui.screen.queryByRole('heading',{name:'DOCTOR'}),null,'swiping artwork should still navigate');
+ click('Previous role');assert.equal(ui.screen.getByRole('slider',{name:'Doctor random role chance'}).value,'30');
+});

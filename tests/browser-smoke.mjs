@@ -76,6 +76,17 @@ try {
   assert.ok(scrolled && Math.abs(initial.y-scrolled.y)<1,'start bar must remain fixed while scrolling');
   await page.getByRole('button',{name:'View White Werewolf details'}).click();
   assert.equal(await page.locator('dialog[open]').count(),1);
+  await page.getByText('ROLE SETTINGS',{exact:true}).click();
+  const chance=page.getByRole('slider',{name:'White Werewolf random role chance'});
+  await chance.scrollIntoViewIfNeeded();
+  const chanceBox=await chance.boundingBox();assert.ok(chanceBox && chanceBox.height>=44,'chance slider needs a phone-sized touch target');
+  const cdp=await context.newCDPSession(page), y=chanceBox.y+chanceBox.height/2;
+  await cdp.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[{x:chanceBox.x+chanceBox.width-5,y}]});
+  for(const fraction of [0.8,0.6,0.4,0.2]) await cdp.send('Input.dispatchTouchEvent',{type:'touchMove',touchPoints:[{x:chanceBox.x+chanceBox.width*fraction,y}]});
+  await cdp.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});
+  assert.ok(Number(await chance.inputValue())<50,'touch drag should change the slider value');
+  assert.ok(await page.getByRole('heading',{name:'WHITE WEREWOLF'}).isVisible(),'dragging the slider must not swipe roles');
+  await cdp.detach();
   await page.getByRole('button',{name:'Close role details'}).click();
   for(const role of ['Werewolf','Doctor','Seer','Villager']) await page.getByRole('button',{name:'Add '+role}).click();
   await page.getByRole('button',{name:/START GAME/}).click();
