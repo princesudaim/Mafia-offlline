@@ -1,6 +1,6 @@
 import { useEffect, useLayoutEffect, useRef, useState, type ChangeEvent } from 'react';
 import { readRankings } from './rankings';
-import { ArrowLeft, BarChart3, Camera, ChevronRight, Image as ImageIcon, Pencil, Plus, Share2, Trash2, User, UserPlus, Users, X } from 'lucide-react';
+import { ArrowLeft, BarChart3, Camera, ChevronRight, Image as ImageIcon, Pencil, Plus, Shuffle, Share2, Trash2, User, UserPlus, Users, X } from 'lucide-react';
 import { assignAvatar, normalizeAvatars, avatarFiles, playerKey as key, type AvatarMap } from './avatar-assignment';
 
 export type { AvatarMap } from './avatar-assignment';
@@ -110,6 +110,27 @@ export default function PlayerSetup({ names, setNames, avatars, setAvatars, onCo
     setNames(nextNames); setNotice(describeChanges(assigned.displaced,assigned.unassigned));
     setError('');setView('roster');
   }
+  function addRandomPlayer() {
+    if (names.length >= 24) { setError('A game can have up to 24 players.'); return; }
+    const pool=['Alex','Ayla','Ayaan','Bella','Bilal','Cleo','Dani','Eli','Elena','Finn','Hana','Haris','Iris','Jade','Kai','Layla','Leo','Luna','Maya','Milo','Nadia','Noah','Omar','Raya','Rumi','Sam','Sara','Tariq','Zara','Zayn','Aria','Nora','Amir','Amina','Dylan','Eden','Remy','Ari','Juno','Nico'];
+    const taken=new Set([...names,...library.map(p=>p.name)].map(key));
+    const availableNames=pool.filter(n=>!taken.has(key(n)));
+    const pick=(length:number)=>Math.min(length-1,Math.floor(Math.random()*length));
+    let n=availableNames.length ? availableNames[pick(availableNames.length)] : pool[pick(pool.length)];
+    if (taken.has(key(n))) { const base=n; let suffix=2; while(taken.has(key(`${base} ${suffix}`))) suffix++; n=`${base} ${suffix}`; }
+    const used=new Set(names.map(existing=>avatars[key(existing)]).filter(Boolean));
+    const availableAvatars=avatarFiles.filter(src=>!used.has(src));
+    // When all built-in portraits are occupied, make a distinct lightweight avatar
+    // instead of taking another player's portrait or leaving this player blank.
+    const hue=Math.floor(Math.random()*360), accent=(hue+48)%360;
+    const generated=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160"><title>${n}</title><rect width="160" height="160" rx="25" fill="hsl(${hue},55%,24%)"/><circle cx="80" cy="76" r="53" fill="hsl(${accent},70%,72%)"/><circle cx="62" cy="70" r="5" fill="#19202b"/><circle cx="98" cy="70" r="5" fill="#19202b"/><path d="M60 92 Q80 110 100 92" fill="none" stroke="#19202b" stroke-width="5" stroke-linecap="round"/><circle cx="49" cy="88" r="7" fill="#ef8c9e" opacity=".75"/><circle cx="111" cy="88" r="7" fill="#ef8c9e" opacity=".75"/></svg>`;
+    const avatar=availableAvatars.length ? availableAvatars[pick(availableAvatars.length)] : `data:image/svg+xml,${encodeURIComponent(generated)}`;
+    const nextNames=[...names,n];
+    const assigned=assignAvatar(nextNames,avatars,n,avatar);
+    if (!persistBoth(library,assigned.avatars)) return;
+    setNames(nextNames);setError('');
+    setNotice(`${n} was added to this game.`);
+  }
   function toggleLibrary(p:Profile) {
     if (names.some(n=>key(n)===key(p.name))) {setNames(names.filter(n=>key(n)!==key(p.name)));return;}
     if (names.length>=24) {setError('A game can have up to 24 players.');return;}
@@ -146,7 +167,7 @@ export default function PlayerSetup({ names, setNames, avatars, setAvatars, onCo
           </button>
           {deleteMode && <button className="remove-roster" aria-label={`Remove ${n} from this game`} onClick={()=>setNames(names.filter(x=>x!==n))}><X size={17}/></button>}
         </div>)}
-        {!deleteMode && <button className="roster-add" aria-label="Add player" onClick={openAdd}><span className="add-top"><Plus size={12}/></span><UserPlus size={29}/><strong>ADD PLAYER</strong></button>}
+        {!deleteMode && <div className="roster-add-slot"><button className="roster-add" aria-label="Add player" onClick={openAdd}><span className="add-top"><Plus size={12}/></span><UserPlus size={29}/><strong>ADD PLAYER</strong></button><button type="button" className="random-player-button" onClick={addRandomPlayer}><Shuffle size={15} aria-hidden="true"/> RANDOM</button></div>}
       </div>
       <div className="setup-bottom"><button className="setup-primary" disabled={names.length<4} onClick={onContinue}>▶ &nbsp; CHOOSE ROLES</button></div>
     </>}

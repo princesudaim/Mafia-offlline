@@ -1,8 +1,8 @@
 export type Role = 'werewolf' | 'villager' | 'doctor' | 'seer' | 'chef' | 'mayor' | 'templar' | 'muted' | 'jester' | 'necromancer' | 'bodyguard' | 'sheriff' | 'serialkiller' | 'survivor' | 'visitor' | 'psychic' | 'celebrity' | 'detective' | 'instigator' | 'strongwolf' | 'sickman' | 'lonewolf' | 'wolfpup' | 'journalist' | 'raven' | 'rabidwolf' | 'whitewolf' | 'gambler' | 'mindflayer' | 'intelligence' | 'thief' | 'police' | 'hypnowolf' | 'charmer';
 export type Player = { id: number; name: string; role: Role; alive: boolean; escaped?: boolean };
-export type Settings = { firstNightSafe: boolean; revealDead: boolean; secretVotes: boolean; allowSkip: boolean; passiveWait: boolean; sounds: boolean; discussionMinutes: number; madmanCount: number };
+export type Settings = { firstNightSafe: boolean; revealDead: boolean; secretVotes: boolean; allowSkip: boolean; passiveWait: boolean; passiveWaitSeconds: number; allRolesWait: boolean; allRolesWaitSeconds: number; doctorSelfProtect: boolean; doctorRepeatProtect: boolean; sheriffEveryNight: boolean; templarUses: number; necromancerUses: number; instigatorMaxUses: number; celebrityAudience: number; intelligenceInterval: number; detectiveShowNames: boolean; seerShowExactRole: boolean; sickStartingNights: number; sickDoctorBonus: number; mayorDoubleVote: boolean; chefNeutralsTogether: boolean; visitorDangerousRoles: boolean; visitorAttackedTarget: boolean; bodyguardProtectAll: boolean; policeRepeatTarget: boolean; journalistDrawing: boolean; psychicShowFriends: boolean; roleWaitSeconds: Partial<Record<Role, number>>; wolfPupAttackCount: number; rabidCanInfect: boolean; hypnoMaxUses: number; wolfRandomTies: boolean; loneWolfInterval: number; strongWolfInterval: number; survivorShieldCount: number; mindStartingParasites: number; mindRegenPercent: number; gamblerPredictions: number; gamblerBetProtection: boolean; ravenReflectAttackers: boolean; serialKillerInterval: number; thiefAttackInterval: number; whiteWolfBetrayPack: boolean; charmerFirstNight: number; randomUniqueRoles: boolean; distributionFollowChances: boolean; roleChances: Partial<Record<Role, number>>; sounds: boolean; discussionMinutes: number; madmanCount: number };
 export const roles: Record<Role, {name: string; description: string; team: 'wolf' | 'village' | 'neutral'}> = {
-  charmer: { name: 'Charmer', team: 'neutral', description: 'Choose another player to become your lover. Together you form an independent Lovers team. You win when all opponents are gone, even if only one lover remains alive.' },
+  charmer: { name: 'Charmer', team: 'neutral', description: 'Choose another player to become your friend. Together you form an independent Friends team. You win when all opponents are gone, even if only one friend remains alive.' },
   police: { name: 'Police', team: 'village', description: 'Detain one player at night to block their role action. You cannot detain the same player on consecutive nights.' },
   hypnowolf: { name: 'Hypnotist Werewolf', team: 'wolf', description: 'Vote with the pack. Once per game, hypnotize a villager; their ability later fails or gives misleading results.' },
   thief: { name: 'Thief', team: 'neutral', description: 'Visit and kill a player at night. If your attack succeeds, steal their role and join their team.' },
@@ -37,7 +37,7 @@ export const roles: Record<Role, {name: string; description: string; team: 'wolf
   muted: { name: 'Muted', team: 'village', description: 'You cannot speak during the game. Communicate using gestures and vote with the village.' },
   chef: { name: 'Chef', team: 'village', description: 'Invite two players to dinner each night. Learn whether they are on the same team.' },
 };
-export const defaults: Settings = {firstNightSafe: true, revealDead: true, secretVotes: true, allowSkip: true, passiveWait: false, sounds: false, discussionMinutes: 3, madmanCount: 0};
+export const defaults: Settings = {firstNightSafe: true, revealDead: true, secretVotes: true, allowSkip: true, passiveWait: false, passiveWaitSeconds: 5, allRolesWait: false, allRolesWaitSeconds: 5, doctorSelfProtect: true, doctorRepeatProtect: false, sheriffEveryNight: false, templarUses: 1, necromancerUses: 1, instigatorMaxUses: 2, celebrityAudience: 1, intelligenceInterval: 2, detectiveShowNames: true, seerShowExactRole: true, sickStartingNights: 3, sickDoctorBonus: 2, mayorDoubleVote: true, chefNeutralsTogether: true, visitorDangerousRoles: true, visitorAttackedTarget: true, bodyguardProtectAll: false, policeRepeatTarget: false, journalistDrawing: true, psychicShowFriends: true, roleWaitSeconds: {}, wolfPupAttackCount: 2, rabidCanInfect: true, hypnoMaxUses: 1, wolfRandomTies: false, loneWolfInterval: 1, strongWolfInterval: 1, survivorShieldCount: 3, mindStartingParasites: 3, mindRegenPercent: 20, gamblerPredictions: 2, gamblerBetProtection: true, ravenReflectAttackers: true, serialKillerInterval: 1, thiefAttackInterval: 1, whiteWolfBetrayPack: true, charmerFirstNight: 1, randomUniqueRoles: false, distributionFollowChances: false, roleChances: {}, sounds: false, discussionMinutes: 3, madmanCount: 0};
 export function shuffle<T>(items: T[], random = Math.random): T[] {
   const out = [...items];
   for (let i = out.length - 1; i > 0; i--) { const j = Math.floor(random() * (i + 1)); [out[i], out[j]] = [out[j], out[i]]; }
@@ -47,21 +47,27 @@ export function shuffle<T>(items: T[], random = Math.random): T[] {
 export function appearsWerewolf(role: Role): boolean {
   return role === 'whitewolf' || roles[role].team === 'wolf';
 }
+/** The Seer's view preserves special disguises in either reporting mode. */
+export function seerReading(role: Role, showExactRole = true): string {
+  const apparentRole: Role = role === 'serialkiller' ? 'villager' : role === 'whitewolf' ? 'werewolf' : role;
+  return showExactRole ? roles[apparentRole].name : appearsWerewolf(apparentRole) ? 'a Werewolf' : 'not a Werewolf';
+}
 // Lone wolves are on the wolf team but are hidden from the known pack.
 export function knownPackmate(a: Role, b: Role): boolean {
   return (['werewolf','strongwolf','wolfpup','rabidwolf','whitewolf','hypnowolf'].includes(a)) && (['werewolf','strongwolf','wolfpup','rabidwolf','whitewolf','hypnowolf'].includes(b));
 }
 // A White Werewolf can betray known packmates when casting a pack vote.
-export function canWolfTarget(actor: Role, target: Role): boolean {
-  return actor === 'whitewolf' || !knownPackmate(actor, target);
+export function canWolfTarget(actor: Role, target: Role, whiteCanBetray = true): boolean {
+  return (actor === 'whitewolf' && whiteCanBetray) || !knownPackmate(actor, target);
 }
-export type WinningSide = 'village' | 'wolf' | 'jester' | 'serialkiller' | 'raven' | 'whitewolf' | 'mindflayer' | 'lovers' | 'draw';
-/** Paired players retain their roles but belong to an independent Lovers team. */
-export function teamOfPlayer(player: Player, lovers: Record<number,number> = {}): 'village'|'wolf'|'neutral'|'lovers' {
-  return lovers[player.id] !== undefined ? 'lovers' : roles[player.role].team;
+export type WinningSide = 'village' | 'wolf' | 'jester' | 'serialkiller' | 'raven' | 'whitewolf' | 'mindflayer' | 'friends' | 'draw';
+/** Paired players retain their roles but belong to an independent Friends team. */
+export function teamOfPlayer(player: Player, lovers: Record<number,number> = {}): 'village'|'wolf'|'neutral'|'friends' {
+  return lovers[player.id] !== undefined ? 'friends' : roles[player.role].team;
 }
-export function sameTeamForChef(a: Player, b: Player, lovers: Record<number,number> = {}): boolean {
+export function sameTeamForChef(a: Player, b: Player, lovers: Record<number,number> = {}, neutralsTogether = true): boolean {
   if (lovers[a.id] !== undefined || lovers[b.id] !== undefined) return lovers[a.id] === b.id && lovers[b.id] === a.id;
+  if (!neutralsTogether && (roles[a.role].team === 'neutral' || roles[b.role].team === 'neutral')) return false;
   return roles[a.role].team === roles[b.role].team;
 }
 export function winner(players: Player[], lovers: Record<number,number> = {}): WinningSide | null {
@@ -70,7 +76,7 @@ export function winner(players: Player[], lovers: Record<number,number> = {}): W
   // Each pair is a separate team. A surviving partner can still win alone.
   for (const p of alive) {
     const partner=lovers[p.id];
-    if (partner !== undefined && alive.every(q=>q.id===p.id || q.id===partner)) return 'lovers';
+    if (partner !== undefined && alive.every(q=>q.id===p.id || q.id===partner)) return 'friends';
   }
   const unpaired = alive.filter(p=>lovers[p.id]===undefined);
   const livingLovers = alive.length !== unpaired.length;
@@ -99,19 +105,39 @@ export function tally(votes: (number | null)[]): number | null {
   const sorted = [...counts.entries()].sort((a,b) => b[1] - a[1]);
   return !sorted.length || (sorted.length > 1 && sorted[0][1] === sorted[1][1]) ? null : sorted[0][0];
 }
-/** Pick top pack targets. At a cutoff tie, no tied target is selected. */
-export function tallyPack(votes: number[], limit: number): number[] {
+/** Pick top pack targets. By default a cutoff tie selects no tied target. */
+export function tallyPack(votes: number[], limit: number, randomTies = false, random = Math.random): number[] {
   const counts = new Map<number, number>();
   for (const v of votes) counts.set(v, (counts.get(v) || 0) + 1);
   const levels = [...new Set(counts.values())].sort((a,b)=>b-a);
   const result: number[] = [];
   for (const score of levels) {
     const tied = [...counts].filter(([, n])=>n===score).map(([id])=>id);
-    if (tied.length > limit-result.length) break;
+    if (tied.length > limit-result.length) { if (randomTies) result.push(...shuffle(tied,random).slice(0,limit-result.length)); break; }
     result.push(...tied);
     if (result.length===limit) break;
   }
   return result;
+}
+/** Random card chances are relative weights; manually selected counts are untouched. */
+export function resolveRandomRoles(counts: Record<Role,number>, randomCounts: Record<'village'|'wolf'|'neutral',number>, order: Role[], chances: Partial<Record<Role,number>> = {}, unique = false, random = Math.random): Record<Role,number> {
+  const resolved = {...counts};
+  for (const team of ['village','wolf','neutral'] as const) {
+    for (let i=0; i<randomCounts[team]; i++) {
+      const candidates = order.filter(role => roles[role].team===team && (!unique || resolved[role]===0)).map(role=>{
+        const raw = chances?.[role];
+        const weight = typeof raw==='number' && Number.isFinite(raw) ? Math.max(0,Math.min(100,raw)) : 100;
+        return {role,weight};
+      }).filter(candidate=>candidate.weight>0);
+      const total=candidates.reduce((sum,candidate)=>sum+candidate.weight,0);
+      if (!total) throw new Error(`Not enough eligible ${team} roles for Random cards. Increase role chances or allow repeated roles.`);
+      let draw=Math.max(0,Math.min(0.999999999999,random()))*total;
+      let chosen=candidates[candidates.length-1].role;
+      for (const candidate of candidates) { if (draw<candidate.weight) { chosen=candidate.role; break; } draw-=candidate.weight; }
+      resolved[chosen]++;
+    }
+  }
+  return resolved;
 }
 export function deal(names: string[], counts: Record<Role, number>): Player[] {
   if (Object.keys(roles).some(r => !Number.isInteger(counts[r as Role]) || counts[r as Role] < 0)) throw new Error('Role counts must be non-negative whole numbers.');
@@ -138,14 +164,14 @@ export function randomLineup(playerCount: number, madmanCount = 0): Record<Role,
 }
 
 /** Resolve wolf attack, mayor protection and templar holy water together. */
-export function resolveNight(players: Player[], votes: number[], saves: number[], assembly: boolean, shots: {actor: number; target: number}[], guards: {actor: number; target: number}[] = [], bullets: {actor: number; target: number}[] = [], extra: { serials: {actor:number;target:number}[]; visitors: {actor:number;target:number}[]; shields: number[]; strong?: {actor:number;target:number}[]; lone?: {actor:number;target:number}[]; packVotes?: {actor:number;target:number}[]; enraged?: boolean; curses?: Record<number, number[]>; triggeredCurses?: number[]; thieves?: {actor:number;target:number}[]; successfulThefts?: {actor:number;target:number}[]; lovers?: Record<number,number>; madmen?: number[] } = {serials:[],visitors:[],shields:[]}): Player[] {
+export function resolveNight(players: Player[], votes: number[], saves: number[], assembly: boolean, shots: {actor: number; target: number}[], guards: {actor: number; target: number}[] = [], bullets: {actor: number; target: number}[] = [], extra: { serials: {actor:number;target:number}[]; visitors: {actor:number;target:number}[]; shields: number[]; strong?: {actor:number;target:number}[]; lone?: {actor:number;target:number}[]; packVotes?: {actor:number;target:number}[]; enraged?: boolean; curses?: Record<number, number[]>; triggeredCurses?: number[]; thieves?: {actor:number;target:number}[]; successfulThefts?: {actor:number;target:number}[]; lovers?: Record<number,number>; madmen?: number[]; visitorDangerousRoles?: boolean; visitorAttackedTarget?: boolean; bodyguardProtectAll?: boolean; packAttackLimit?: number; randomPackTies?: boolean; ravenReflectAttackers?: boolean } = {serials:[],visitors:[],shields:[]}): Player[] {
   const killed = new Set<number>();
   const usedGuards = new Set<number>();
   const isPartner = (actor: number, target: number) => extra.lovers?.[actor] === target;
   const landedThefts: Visit[] = [];
   // A marked attacker is reflected back by the targeted Raven. Pack ballots identify the attackers.
   const reflected = (actor: number, target: number): boolean => {
-    if (players.some(p => p.alive && p.id === target && p.role === 'raven') && (extra.curses?.[target] || []).includes(actor)) {
+    if (extra.ravenReflectAttackers !== false && players.some(p => p.alive && p.id === target && p.role === 'raven') && (extra.curses?.[target] || []).includes(actor)) {
       killed.add(actor); return true;
     }
     return false;
@@ -154,11 +180,11 @@ export function resolveNight(players: Player[], votes: number[], saves: number[]
   for (const shot of extra.lone || []) {
     const target = players.find(p => p.alive && p.id === shot.target);
     if (!target || isPartner(shot.actor,shot.target) || killed.has(shot.actor) || reflected(shot.actor,shot.target) || saves.includes(target.id) || extra.shields.includes(target.id) || (assembly && teamOfPlayer(target,extra.lovers) === 'village')) continue;
-    const guard = guards.find(g => g.actor !== g.target && g.target === target.id && !usedGuards.has(g.actor) && !killed.has(g.actor) && players.some(p => p.alive && p.id === g.actor) && teamOfPlayer(target,extra.lovers) === 'village');
+    const guard = guards.find(g => g.actor !== g.target && g.target === target.id && !usedGuards.has(g.actor) && !killed.has(g.actor) && players.some(p => p.alive && p.id === g.actor) && (extra.bodyguardProtectAll === true || teamOfPlayer(target,extra.lovers) === 'village'));
     if (guard) { killed.add(guard.actor); usedGuards.add(guard.actor); } else killed.add(target.id);
   }
   const packVotes = extra.packVotes ? extra.packVotes.filter(v => !killed.has(v.actor) && !isPartner(v.actor,v.target)).map(v => v.target) : votes;
-  const wolfTargets = tallyPack(packVotes, extra.enraged ? 2 : 1);
+  const wolfTargets = tallyPack(packVotes, extra.enraged ? Math.max(1,Math.floor(extra.packAttackLimit ?? 2)) : 1,extra.randomPackTies === true);
   for (const id of wolfTargets) {
     const victim = players.find(p => p.alive && p.id === id);
     const voters = (extra.packVotes || []).filter(v=>v.target===id && !killed.has(v.actor) && !isPartner(v.actor,v.target));
@@ -196,13 +222,13 @@ export function resolveNight(players: Player[], votes: number[], saves: number[]
   ]);
   for (const visit of extra.visitors) {
     const target = players.find(p => p.id === visit.target && p.alive);
-    if (target && (appearsWerewolf(target.role) || target.role === 'serialkiller' || attacked.has(target.id))) killed.add(visit.actor);
+    if (target && ((extra.visitorDangerousRoles !== false && (appearsWerewolf(target.role) || target.role === 'serialkiller')) || (extra.visitorAttackedTarget !== false && attacked.has(target.id)))) killed.add(visit.actor);
   }
   // Shields stop the attack before a bodyguard needs to intervene.
   for (const id of extra.shields) killed.delete(id);
   // One bodyguard intercepts each attacked target; this precedence is a reconstruction.
   for (const guard of guards) {
-    if (!usedGuards.has(guard.actor) && !killed.has(guard.actor) && guard.actor !== guard.target && killed.has(guard.target) && players.some(p => p.id === guard.target && teamOfPlayer(p,extra.lovers) === 'village') && players.some(p => p.alive && p.id === guard.actor)) {
+    if (!usedGuards.has(guard.actor) && !killed.has(guard.actor) && guard.actor !== guard.target && killed.has(guard.target) && players.some(p => p.id === guard.target && (extra.bodyguardProtectAll === true || teamOfPlayer(p,extra.lovers) === 'village')) && players.some(p => p.alive && p.id === guard.actor)) {
       killed.delete(guard.target);
       killed.add(guard.actor);
     }
@@ -218,12 +244,12 @@ export function visitorsTo(visits: Visit[], target: number): number[] {
 }
 
 /** Apply illness after night actions; each doctor visit extends life by two nights. */
-export function applyIllness(players: Player[], doctorSaves: Record<number,number>, remaining: Record<number,number>, corrupted: number[] = []): {players: Player[]; remaining: Record<number,number>} {
+export function applyIllness(players: Player[], doctorSaves: Record<number,number>, remaining: Record<number,number>, corrupted: number[] = [], startingNights = 3, doctorBonus = 2): {players: Player[]; remaining: Record<number,number>} {
   const next = {...remaining};
   const updated = players.map(p => {
     if (!p.alive || p.role !== 'sickman' || corrupted.includes(p.id)) return p;
     const visits = Object.values(doctorSaves).filter(target => target === p.id).length;
-    next[p.id] = (next[p.id] ?? 3) + visits * 2 - 1;
+    next[p.id] = (next[p.id] ?? startingNights) + visits * doctorBonus - 1;
     return next[p.id] <= 0 ? {...p, alive:false} : p;
   });
   return {players: updated, remaining: next};
@@ -241,15 +267,15 @@ export function applyInfections(players: Player[], infections: Visit[]): { playe
   return {players:players.map(p=>converted.has(p.id) ? {...p,role:'werewolf'} : p),converted:[...converted]};
 }
 
-/** Two correct predictions prepare a living Gambler to escape after surviving the next night. */
-export function settleGamblerBets(players: Player[], executed: number | null, bets: Visit[], previousCorrect: Record<number,number>, lovers: Record<number,number> = {}): {players: Player[]; correct: Record<number,number>; indebted: number[]; ready: number[]} {
+/** Correct predictions prepare a living Gambler to escape after surviving the next night. */
+export function settleGamblerBets(players: Player[], executed: number | null, bets: Visit[], previousCorrect: Record<number,number>, lovers: Record<number,number> = {}, requiredCorrect = 2): {players: Player[]; correct: Record<number,number>; indebted: number[]; ready: number[]} {
   const correct = {...previousCorrect}, indebted: number[] = [], ready: number[] = [];
   for (const bet of bets) {
     const gambler = players.find(p=>p.id===bet.actor && p.alive && p.role==='gambler');
     if (!gambler) continue;
     if (executed !== null && bet.target === executed) {
       correct[gambler.id] = (correct[gambler.id] || 0) + 1;
-      if (correct[gambler.id] >= 2 && lovers[gambler.id] === undefined) ready.push(gambler.id);
+      if (correct[gambler.id] >= requiredCorrect && lovers[gambler.id] === undefined) ready.push(gambler.id);
     } else indebted.push(gambler.id);
   }
   return {players,correct,indebted,ready};
@@ -270,9 +296,9 @@ export function mindFlayerWinner(players: Player[], parasites: Record<number,num
   const living=players.filter(p=>p.alive);
   return living.find(p=>p.role==='mindflayer' && lovers[p.id]===undefined && living.every(q=>q.id===p.id || (parasites[p.id] || []).includes(q.id)))?.id ?? null;
 }
-/** Skipping gives one parasite with probability 20%. */
-export function regenerateParasite(stock: number, random = Math.random): number {
-  return stock + (random() < 0.2 ? 1 : 0);
+/** Skipping gives one parasite, with a 20% chance by default. */
+export function regenerateParasite(stock: number, random = Math.random, chance = 0.2): number {
+  return stock + (random() < chance ? 1 : 0);
 }
 
 /** Generate two candidates; the chance and first report timing are provisional. */
@@ -320,14 +346,16 @@ export function canChefAct(players: Player[], chefId: number): boolean {
   return players.filter(p=>p.alive && p.id!==chefId).length >= 2;
 }
 /** Privately assign each unblocked Celebrity to one other living player. */
-export function celebrityReveals(players: Player[], blocked: number[] = [], corrupted: number[] = [], random = Math.random): Record<number,string[]> {
+export function celebrityReveals(players: Player[], blocked: number[] = [], corrupted: number[] = [], random = Math.random, audience = 1): Record<number,string[]> {
   const living=players.filter(p=>p.alive);
   const result:Record<number,string[]>={};
   for (const star of living.filter(p=>p.role==='celebrity' && !blocked.includes(p.id) && !corrupted.includes(p.id))) {
     const candidates=living.filter(p=>p.id!==star.id);
-    if (candidates.length) {
+    const count=Math.max(0,Math.min(candidates.length,Math.floor(audience)));
+    for (let i=0;i<count;i++) {
       const index=Math.min(candidates.length-1,Math.floor(random()*candidates.length));
-      (result[candidates[index].id] ||= []).push(star.name);
+      const [recipient]=candidates.splice(index,1);
+      (result[recipient.id] ||= []).push(star.name);
     }
   }
   return result;

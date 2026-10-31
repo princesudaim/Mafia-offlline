@@ -73,11 +73,11 @@ The compiled description says the White Werewolf appears as a Werewolf, votes wi
 
 ### Gambler reconstruction
 
-The compiled description says a Gambler may bet on the next execution, is protected on gambling nights, escapes after two correct predictions, and faces creditors on the next night after a wrong prediction unless saved. The binary also says “If you survive tonight, you'll escape in the morning!” The PWA therefore prepares the Gambler after a second correct prediction and escapes them at the next dawn only if they survive and remain an unpaired Gambler. A tied/skip vote counts as a wrong guess, a Doctor prevents the one-time debt death, and the escape is publicly announced. Escape/conversion precedence, debt interactions and tie handling remain provisional.
+The compiled description says a Gambler may bet on the next execution, is protected on gambling nights, escapes after two correct predictions, and faces creditors on the next night after a wrong prediction unless saved. The binary also says “If you survive tonight, you'll escape in the morning!” The PWA therefore prepares the Gambler after a second correct prediction and escapes them at the next dawn only if they survive and remain an unpaired Gambler. A tied/skip vote counts as a wrong guess, a Doctor prevents the one-time debt death, and the escape is publicly announced. The prediction threshold and night protection while betting are configurable; the defaults remain two predictions and protection enabled. Escape/conversion precedence, debt interactions and tie handling remain provisional.
 
 ### Mind Flayer reconstruction
 
-The compiled role description says the Mind Flayer wins when all other living players are parasitized, and skipping has a 20% chance to generate another parasite. A separate onboarding quote instead mentions controlling a majority, so the exact original victory condition needs verification. The PWA follows the role description, provisionally starts with three parasites, and applies wins after night resolution or voting. Stock, timing, simultaneous wins, and interaction precedence are unverified.
+The compiled role description says the Mind Flayer wins when all other living players are parasitized, and skipping has a 20% chance to generate another parasite. A separate onboarding quote instead mentions controlling a majority, so the exact original victory condition needs verification. The PWA follows the role description, provisionally starts with three parasites, and applies wins after night resolution or voting. Starting stock and skip regeneration chance can be configured, retaining three and 20% by default. Stock, timing, simultaneous wins, and interaction precedence are unverified.
 
 ### Intelligence Chief reconstruction
 

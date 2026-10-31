@@ -24,6 +24,16 @@ try {
   assert.ok(await page.getByRole('heading',{name:'THE RULEBOOK'}).isVisible());
   await page.getByRole('button',{name:'GOT IT'}).click();
   await page.getByRole('button',{name:/START GAME/}).click();
+  // The last roster control must remain reachable above the fixed footer on short phones.
+  for (const [width,height] of [[320,500],[390,700]]) {
+    await page.setViewportSize({width,height});
+    await page.evaluate(()=>window.scrollTo(0,document.body.scrollHeight));
+    const button=await page.getByRole('button',{name:'RANDOM',exact:true}).boundingBox();
+    const footer=await page.locator('.setup-bottom').boundingBox();
+    assert.ok(button && footer && button.y>=0 && button.y+button.height<=footer.y, 'Random button must be visible and tappable above the fixed footer');
+  }
+  await page.setViewportSize({width:390,height:700});
+  await page.evaluate(()=>window.scrollTo(0,0));
   // Exercise the actual mobile bottom sheets and preserve unique avatar ownership.
   await page.getByRole('button',{name:'Edit A'}).click();
   await page.getByRole('button',{name:'Choose or change game avatar'}).click();
@@ -98,10 +108,11 @@ try {
   assert.ok(await page.getByText('Offline village news').isVisible());
   assert.ok(await page.evaluate(()=>window.__playedAudio.some(src=>src.endsWith('/day.mp3'))));
   assert.equal(await page.locator('.newspaper img').count(),1,'touch drawing should appear in the newspaper');
-  await page.getByRole('button',{name:'CONTINUE →'}).click();
+  await page.getByRole('button',{name:'CONTINUE →'}).focus();
+  await page.keyboard.down('Enter'); await page.waitForTimeout(2100); await page.keyboard.up('Enter');
   await page.getByRole('button',{name:'END DISCUSSION →'}).click();
   assert.ok(await page.getByRole('heading',{name:/who are you voting for/}).isVisible());
-  assert.ok(await page.evaluate(()=>window.__playedAudio.some(src=>src.endsWith('/vote.mp3'))));
+  assert.equal(await page.evaluate(()=>window.__playedAudio.some(src=>src.endsWith('/vote.mp3'))),false);
   await page.getByRole('button',{name:'Mute game sounds'}).click();
   await page.evaluate(()=>window.scrollTo(0,document.body.scrollHeight));
   await page.getByRole('button',{name:'SKIP VOTE'}).click();

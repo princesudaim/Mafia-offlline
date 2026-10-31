@@ -6,11 +6,11 @@ export const RANKINGS_KEY = 'werewolf.rankings.v1';
 
 /** Reconstructed standings, stored locally by player name rather than a server account. */
 export function winningPlayers(players: Player[], side: WinningSide, lovers: Record<number,number>, jesterWinner: string, mindWinner: string): number[] {
-  const survivingLover = side === 'lovers' ? players.find(p=>p.alive && lovers[p.id] !== undefined) : undefined;
+  const survivingLover = side === 'friends' ? players.find(p=>p.alive && lovers[p.id] !== undefined) : undefined;
   return players.filter(p=>{
     if (p.escaped) return true;
     if (p.alive && p.role === 'survivor' && lovers[p.id] === undefined) return true;
-    if (side === 'lovers') return !!survivingLover && (p.id===survivingLover.id || p.id===lovers[survivingLover.id]);
+    if (side === 'friends') return !!survivingLover && (p.id===survivingLover.id || p.id===lovers[survivingLover.id]);
     if (lovers[p.id] !== undefined) return false;
     if (side === 'village' || side === 'wolf') return roles[p.role].team === side;
     if (side === 'jester') return p.role === 'jester' && p.name === jesterWinner;

@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync, statSync } from 'node:fs';
+import { existsSync, readFileSync, statSync } from 'node:fs';
 import { roles } from '../src/werewolf-engine.ts';
 
 test('every implemented role has its own artwork and is cached for offline play', () => {
@@ -19,4 +19,18 @@ test('optional phase sounds are present and available offline',()=>{
     assert.ok(statSync(`public/${path}`).size>0);
     assert.ok(worker.includes(`"${path}"`));
   }
+});
+
+test('all Celebrity skin artwork is included for offline play',()=>{
+ const worker=readFileSync('public/sw.js','utf8');
+ for(const name of ['celebrity-new.webp','celebrity-spotlight.webp','celebrity-gala.webp']){
+  assert.ok(existsSync(`public/werewolf/${name}`));assert.ok(worker.includes(`"werewolf/${name}"`));
+ }
+});
+
+test('all Charmer skin artwork is included for offline play',()=>{
+ const worker=readFileSync('public/sw.js','utf8');
+ for(const name of ['charmer-new.webp','charmer-moonlight.webp','charmer-starlight.webp','charmer-sapphire.webp']){
+  assert.ok(existsSync(`public/werewolf/${name}`));assert.ok(worker.includes(`"werewolf/${name}"`));
+ }
 });

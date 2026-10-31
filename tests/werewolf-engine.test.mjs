@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {deal, randomLineup, tally, winner, shuffle, resolveNight, voteWinner, visitorsTo, applyIllness, applyInfections, settleGamblerBets, resolveGamblerEscapes, collectGamblerDebts, mindFlayerWinner, regenerateParasite, intelligenceReport, applyThefts, canDetain, resolveDetentions, applyHypnosis, canChefAct, celebrityReveals, teamOfPlayer, sameTeamForChef, isEligibleMadmanRole, selectMadmen, roles, appearsWerewolf, knownPackmate, canWolfTarget, tallyPack} from '../src/werewolf-engine.ts';
+import {deal, resolveRandomRoles, randomLineup, tally, winner, shuffle, resolveNight, voteWinner, visitorsTo, applyIllness, applyInfections, settleGamblerBets, resolveGamblerEscapes, collectGamblerDebts, mindFlayerWinner, regenerateParasite, intelligenceReport, applyThefts, canDetain, resolveDetentions, applyHypnosis, canChefAct, celebrityReveals, teamOfPlayer, sameTeamForChef, isEligibleMadmanRole, selectMadmen, roles, appearsWerewolf, knownPackmate, canWolfTarget, tallyPack} from '../src/werewolf-engine.ts';
 const players = [
  {id:0,name:'Wolf',role:'werewolf',alive:true},
  {id:1,name:'A',role:'villager',alive:true},
@@ -340,9 +340,9 @@ test('hypnosis no longer disables a villager after conversion to another team',(
 test('lovers are an independent team and one surviving partner can win',()=>{
  const charmer={id:3,name:'Charmer',role:'charmer',alive:true};
  const p=[...players,charmer];const bonds={3:0,0:3};
- assert.equal(teamOfPlayer(p[0],bonds),'lovers');
- assert.equal(winner([p[0],charmer],bonds),'lovers');
- assert.equal(winner([charmer],bonds),'lovers');
+ assert.equal(teamOfPlayer(p[0],bonds),'friends');
+ assert.equal(winner([p[0],charmer],bonds),'friends');
+ assert.equal(winner([charmer],bonds),'friends');
  assert.equal(winner(p,bonds),null);
  assert.equal(sameTeamForChef(p[0],charmer,bonds),true);
  assert.equal(sameTeamForChef(p[0],p[1],bonds),false);
@@ -382,15 +382,15 @@ test('Sheriff bullets do not kill a Madman or cause a visitor to die from that s
 });
 
 
-test('a recruited werewolf who is bonded remains on the Lovers team',()=>{
+test('a recruited werewolf who is bonded remains on the Friends team',()=>{
  const players=[{id:0,name:'Charmer',role:'charmer',alive:true},{id:1,name:'Partner',role:'villager',alive:true},{id:2,name:'Rabid',role:'rabidwolf',alive:true}];
  const bond={0:1,1:0};
  const after=applyInfections(players,[{actor:2,target:1}]).players;
  assert.equal(after[1].role,'werewolf');
- assert.equal(teamOfPlayer(after[1],bond),'lovers');
+ assert.equal(teamOfPlayer(after[1],bond),'friends');
  assert.equal(knownPackmate('werewolf',after[1].role),true);
- assert.equal(winner([after[0],after[1]],bond),'lovers');
- assert.equal(teamOfPlayer({...players[1],role:'werewolf'},bond),'lovers');
+ assert.equal(winner([after[0],after[1]],bond),'friends');
+ assert.equal(teamOfPlayer({...players[1],role:'werewolf'},bond),'friends');
 });
 
 
@@ -427,4 +427,125 @@ test('video-inspired roles are still randomly assigned to players',()=>{
   assert.equal(first.filter(p=>p.role==='werewolf').length,2);
   assert.equal(second.filter(p=>p.role==='seer').length,1);
  } finally {Math.random=original;}
+});
+
+test('Celebrity audience is distinct, excludes self, and respects blocks',()=>{
+ const players=[{id:0,name:'Star',role:'celebrity',alive:true},{id:1,name:'A',role:'villager',alive:true},{id:2,name:'B',role:'villager',alive:true},{id:3,name:'C',role:'villager',alive:false}];
+ assert.deepEqual(celebrityReveals(players,[],[],()=>0,3),{1:['Star'],2:['Star']});
+ assert.deepEqual(celebrityReveals(players,[0],[],()=>0,3),{});
+ assert.deepEqual(celebrityReveals(players,[],[0],()=>0,3),{});
+});
+
+test('Seer can see exact roles or only werewolf appearance, preserving disguises', async()=>{
+ const {seerReading}=await import('../src/werewolf-engine.ts');
+ assert.equal(seerReading('doctor',true),'Doctor');assert.equal(seerReading('doctor',false),'not a Werewolf');
+ assert.equal(seerReading('whitewolf',true),'Werewolf');assert.equal(seerReading('whitewolf',false),'a Werewolf');
+ assert.equal(seerReading('serialkiller',true),'Villager');assert.equal(seerReading('serialkiller',false),'not a Werewolf');
+ assert.equal(seerReading('werewolf',false),'a Werewolf');
+});
+
+test('Sick Man illness uses configurable starting nights and Doctor bonus',()=>{
+ const sick=[{id:0,name:'Sick',role:'sickman',alive:true}];
+ let next=applyIllness(sick,{}, {},[],2,4);assert.equal(next.remaining[0],1);assert.equal(next.players[0].alive,true);
+ next=applyIllness(next.players,{1:0},next.remaining,[],2,4);assert.equal(next.remaining[0],4);assert.equal(next.players[0].alive,true);
+ next=applyIllness(sick,{1:0},{0:1},[],2,0);assert.equal(next.players[0].alive,false);
+ assert.equal(applyIllness(sick,{}, {0:1},[0],2,4).players[0].alive,true);
+});
+
+test('Chef neutral-team option respects independent players and Friends',()=>{
+ const a={id:0,name:'A',role:'jester',alive:true},b={id:1,name:'B',role:'serialkiller',alive:true};
+ assert.equal(sameTeamForChef(a,b),true);
+ assert.equal(sameTeamForChef(a,b,{},false),false);
+ assert.equal(sameTeamForChef(a,b,{0:1,1:0},false),true);
+});
+
+test('Visitor danger options affect visits without stopping direct attacks',()=>{
+ const p=[{id:0,name:'Visitor',role:'visitor',alive:true},{id:1,name:'Wolf',role:'werewolf',alive:true},{id:2,name:'Town',role:'villager',alive:true}];
+ const run=(target,votes,extra={})=>resolveNight(p,votes,[],false,[],[],[],{serials:[],shields:[],visitors:[{actor:0,target}],...extra});
+ assert.equal(run(1,[])[0].alive,false);
+ assert.equal(run(1,[],{visitorDangerousRoles:false})[0].alive,true);
+ assert.equal(run(2,[2])[0].alive,false);
+ assert.equal(run(2,[2],{visitorAttackedTarget:false})[0].alive,true);
+ assert.equal(run(2,[0],{visitorDangerousRoles:false,visitorAttackedTarget:false})[0].alive,false);
+});
+
+test('Bodyguard may protect other teams only when configured, including from Lone Wolf',()=>{
+ const p=[{id:0,name:'Killer',role:'serialkiller',alive:true},{id:1,name:'Guard',role:'bodyguard',alive:true},{id:2,name:'Shooter',role:'sheriff',alive:true},{id:3,name:'Lone',role:'lonewolf',alive:true}];
+ const guards=[{actor:1,target:0}], bullets=[{actor:2,target:0}];
+ const off=resolveNight(p,[],[],false,[],guards,bullets,{serials:[],visitors:[],shields:[]});assert.equal(off[0].alive,false);assert.equal(off[1].alive,true);
+ const on=resolveNight(p,[],[],false,[],guards,bullets,{serials:[],visitors:[],shields:[],bodyguardProtectAll:true});assert.equal(on[0].alive,true);assert.equal(on[1].alive,false);
+ const lone=resolveNight(p,[],[],false,[],guards,[],{serials:[],visitors:[],shields:[],lone:[{actor:3,target:0}],bodyguardProtectAll:true});assert.equal(lone[0].alive,true);assert.equal(lone[1].alive,false);
+});
+
+test('Wolf Pup revenge resolves the configured number of pack targets',()=>{
+ const p=[{id:0,name:'Wolf',role:'werewolf',alive:true},...Array.from({length:4},(_,i)=>({id:i+1,name:`V${i+1}`,role:'villager',alive:true}))];
+ const ballots=[{actor:0,target:1},{actor:0,target:1},{actor:0,target:1},{actor:0,target:2},{actor:0,target:2},{actor:0,target:3}];
+ const extra={serials:[],visitors:[],shields:[],packVotes:ballots,enraged:true};
+ assert.deepEqual(resolveNight(p,[],[],false,[],[],[],extra).filter(x=>!x.alive).map(x=>x.id),[1,2]);
+ assert.deepEqual(resolveNight(p,[],[],false,[],[],[],{...extra,packAttackLimit:3}).filter(x=>!x.alive).map(x=>x.id),[1,2,3]);
+ assert.deepEqual(resolveNight(p,[],[],false,[],[],[],{...extra,packAttackLimit:1}).filter(x=>!x.alive).map(x=>x.id),[1]);
+});
+
+test('pack tie breaker chooses only among the tied cutoff when enabled',()=>{
+ assert.deepEqual(tallyPack([1,2],1),[]);
+ assert.deepEqual(tallyPack([1,2],1,true,()=>0),[2]);
+ assert.deepEqual(tallyPack([1,1,2,3],2,true,()=>0),[1,3]);
+ assert.deepEqual(tallyPack([1,1,2,3],2),[1]);
+});
+
+test('Mind Flayer regeneration honors configured chance boundaries',()=>{
+ assert.equal(regenerateParasite(0,()=>0,0),0);
+ assert.equal(regenerateParasite(2,()=>0.999,1),3);
+ assert.equal(regenerateParasite(2,()=>0.49,0.5),3);
+ assert.equal(regenerateParasite(2,()=>0.5,0.5),2);
+});
+
+test('Gambler escape threshold is configurable without changing wrong-bet consequences',()=>{
+ const g={id:10,name:'G',role:'gambler',alive:true};const village={id:11,name:'V',role:'villager',alive:true};const players=[g,village];
+ assert.deepEqual(settleGamblerBets(players,11,[{actor:10,target:11}],{}, {},1).ready,[10]);
+ assert.deepEqual(settleGamblerBets(players,11,[{actor:10,target:11}],{}, {},3).ready,[]);
+ assert.deepEqual(settleGamblerBets(players,11,[{actor:10,target:11}],{10:2}, {},3).ready,[10]);
+ assert.deepEqual(settleGamblerBets(players,null,[{actor:10,target:11}],{}, {},1).indebted,[10]);
+ assert.deepEqual(settleGamblerBets(players,11,[{actor:10,target:11}],{}, {10:11},1).ready,[]);
+});
+
+test('Raven reflection can be disabled without disabling the activated curse',()=>{
+ const p=[...players,{id:3,name:'Raven',role:'raven',alive:true},{id:4,name:'Killer',role:'serialkiller',alive:true}];
+ const hit=resolveNight(p,[],[],false,[],[],[],{serials:[{actor:4,target:3}],visitors:[],shields:[],curses:{3:[4]},ravenReflectAttackers:false});
+ assert.equal(hit[3].alive,false);assert.equal(hit[4].alive,true);
+ const pack=resolveNight(p,[3],[],false,[],[],[],{serials:[],visitors:[],shields:[],packVotes:[{actor:0,target:3}],curses:{3:[0]},ravenReflectAttackers:false});
+ assert.equal(pack[3].alive,false);assert.equal(pack[0].alive,true);
+ const curse=resolveNight(p,[],[],false,[],[],[],{serials:[],visitors:[],shields:[],curses:{3:[4]},triggeredCurses:[3],ravenReflectAttackers:false});
+ assert.equal(curse[4].alive,false);
+});
+
+test('White Werewolf betrayal option changes pack targeting without revealing Lone Werewolves',()=>{
+ assert.equal(canWolfTarget('whitewolf','werewolf'),true);
+ assert.equal(canWolfTarget('whitewolf','werewolf',false),false);
+ assert.equal(canWolfTarget('whitewolf','wolfpup',false),false);
+ assert.equal(canWolfTarget('whitewolf','lonewolf',false),true);
+ assert.equal(canWolfTarget('whitewolf','villager',false),true);
+ assert.equal(canWolfTarget('werewolf','whitewolf',false),false);
+});
+
+test('Random cards use relative chance weights without changing manually added roles',()=>{
+ const counts=Object.fromEntries(Object.keys(roles).map(r=>[r,0]));counts.werewolf=1;
+ const order=['villager','doctor','seer','werewolf'];
+ const chances={villager:0,doctor:50,seer:100};
+ const randoms={village:1,wolf:0,neutral:0};
+ assert.equal(resolveRandomRoles(counts,randoms,order,chances,false,()=>0).doctor,1);
+ assert.equal(resolveRandomRoles(counts,randoms,order,chances,false,()=>0.3333334).seer,1);
+ assert.equal(counts.werewolf,1);assert.equal(counts.doctor,0);
+ assert.equal(resolveRandomRoles(counts,randoms,order,{villager:0,doctor:0,seer:100},false,()=>0).seer,1);
+ assert.throws(()=>resolveRandomRoles(counts,randoms,order,{villager:0,doctor:0,seer:0}),/Not enough eligible village roles/);
+});
+
+test('Random unique mode excludes manually selected roles and prior random draws',()=>{
+ const counts=Object.fromEntries(Object.keys(roles).map(r=>[r,0]));counts.werewolf=1;counts.doctor=1;
+ const order=['villager','doctor','seer','werewolf'];const randoms={village:2,wolf:0,neutral:0};
+ const result=resolveRandomRoles(counts,randoms,order,{},true,()=>0);
+ assert.equal(result.doctor,1);assert.equal(result.villager,1);assert.equal(result.seer,1);
+ assert.throws(()=>resolveRandomRoles(counts,{...randoms,village:3},order,{},true,()=>0),/Not enough eligible village roles/);
+ const repeated=resolveRandomRoles(counts,{...randoms,village:2},order,{villager:100,doctor:0,seer:0},false,()=>0);
+ assert.equal(repeated.villager,2);assert.equal(repeated.doctor,1);
 });
