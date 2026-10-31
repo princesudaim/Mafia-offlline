@@ -68,3 +68,33 @@ test('Neutral roles follow chances in games of five or more and are never needed
  assert.doesNotThrow(()=>balancedDistribution(4,'balanced',0,true,chances,()=>0));
  assert.throws(()=>balancedDistribution(5,'balanced',0,true,chances,()=>0),/eligible Neutral role/);
 });
+
+test('distribution no-repeat mode assigns each role at most once for every player count',()=>{
+ for(let n=4;n<=24;n++)for(const mode of ['easy','balanced','hard']){
+  const counts=balancedDistribution(n,mode,0,false,{},()=>0.5,true);
+  assert.equal(Object.values(counts).reduce((a,b)=>a+b,0),n);
+  assert.ok(Object.values(counts).every(count=>count<=1));
+ }
+ const counts=balancedDistribution(12,'balanced',4,false,{},()=>0.5,true);
+ assert.ok(Object.values(counts).every(count=>count<=1));
+ assert.ok(Object.entries(counts).filter(([r])=>isEligibleMadmanRole(r)).reduce((sum,[,c])=>sum+c,0)>=4);
+});
+
+test('no-repeat distribution fails rather than silently selecting excluded or repeated roles',()=>{
+ const chances=Object.fromEntries(Object.keys(roles).map(r=>[r,0]));
+ chances.werewolf=100;chances.villager=100;chances.survivor=100;
+ assert.throws(()=>balancedDistribution(5,'balanced',0,true,chances,()=>0,true),/Not enough different eligible roles/);
+ const permitted=balancedDistribution(5,'balanced',0,true,chances,()=>0,false);
+ assert.equal(permitted.villager,3);assert.equal(permitted.survivor,1);
+});
+
+test('disabled roles are excluded from all automatic distribution modes even when chances are ignored',()=>{
+ for(const follow of [false,true])for(const mode of ['easy','balanced','hard']){
+  const disabled=['werewolf','doctor','seer','charmer'];
+  const counts=balancedDistribution(8,mode,0,follow,{},()=>0.3,false,disabled);
+  for(const role of disabled)assert.equal(counts[role],0);
+  assert.equal(Object.values(counts).reduce((a,b)=>a+b,0),8);
+ }
+ const wolves=Object.keys(roles).filter(r=>roles[r].team==='wolf');
+ assert.throws(()=>balancedDistribution(4,'balanced',0,false,{},()=>0,false,wolves),/Enable more roles/);
+});

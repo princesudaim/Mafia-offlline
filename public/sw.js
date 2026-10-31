@@ -4,9 +4,9 @@ const CACHE = PREFIX + "__BUILD_REVISION__";
 const CORE = [
   "./", "index.html", "manifest.webmanifest", "icons/werewolf-512.png",
   "werewolf/home.png", "werewolf/night.png", "werewolf/day.png",
-  "werewolf/werewolf.webp", "werewolf/villager.webp", "werewolf/doctor.webp", "werewolf/seer.webp", "werewolf/chef.webp", "werewolf/mayor.webp", "werewolf/templar.webp", "werewolf/muted.webp", "werewolf/jester.webp", "werewolf/necromancer.webp", "werewolf/bodyguard.webp", "werewolf/sheriff.webp", "werewolf/serialkiller.webp", "werewolf/visitor.webp", "werewolf/survivor.webp", "werewolf/psychic.webp", "werewolf/celebrity.webp", "werewolf/celebrity-new.webp", "werewolf/celebrity-spotlight.webp", "werewolf/celebrity-gala.webp", "werewolf/detective.webp", "werewolf/instigator.webp", "werewolf/strongwolf.webp", "werewolf/sickman.webp", "werewolf/lonewolf.webp", "werewolf/wolfpup.webp", "werewolf/journalist.webp", "werewolf/raven.webp", "werewolf/rabidwolf.webp", "werewolf/whitewolf.webp", "werewolf/gambler.webp", "werewolf/mindflayer.webp", "werewolf/intelligence.webp", "werewolf/thief.webp", "werewolf/police.webp", "werewolf/hypnowolf.webp", "werewolf/charmer.webp", "werewolf/charmer-new.webp", "werewolf/charmer-moonlight.webp", "werewolf/charmer-starlight.webp", "werewolf/charmer-sapphire.webp",
+  "werewolf/madman.webp", "werewolf/werewolf.webp", "werewolf/villager.webp", "werewolf/doctor.webp", "werewolf/seer.webp", "werewolf/chef.webp", "werewolf/mayor.webp", "werewolf/templar.webp", "werewolf/muted.webp", "werewolf/jester.webp", "werewolf/necromancer.webp", "werewolf/bodyguard.webp", "werewolf/sheriff.webp", "werewolf/serialkiller.webp", "werewolf/visitor.webp", "werewolf/survivor.webp", "werewolf/psychic.webp", "werewolf/celebrity.webp", "werewolf/celebrity-new.webp", "werewolf/celebrity-spotlight.webp", "werewolf/celebrity-gala.webp", "werewolf/detective.webp", "werewolf/instigator.webp", "werewolf/strongwolf.webp", "werewolf/sickman.webp", "werewolf/lonewolf.webp", "werewolf/wolfpup.webp", "werewolf/journalist.webp", "werewolf/raven.webp", "werewolf/rabidwolf.webp", "werewolf/whitewolf.webp", "werewolf/gambler.webp", "werewolf/mindflayer.webp", "werewolf/intelligence.webp", "werewolf/thief.webp", "werewolf/police.webp", "werewolf/hypnowolf.webp", "werewolf/charmer.webp", "werewolf/charmer-new.webp", "werewolf/charmer-moonlight.webp", "werewolf/charmer-starlight.webp", "werewolf/charmer-sapphire.webp", "werewolf/charmer-sunrise.webp",
   "werewolf/barlow.ttf", "werewolf/condensed.ttf",
-  "werewolf/audio/night.mp3", "werewolf/audio/day.mp3", "werewolf/audio/vote.mp3",
+  "werewolf/audio/night.mp3", "werewolf/audio/day.mp3", "werewolf/audio/vote.mp3", "werewolf/audio/tap.wav",
   "werewolf/avatars/player1.webp",
   "werewolf/avatars/player2.webp",
   "werewolf/avatars/player3.webp",
@@ -22,11 +22,15 @@ const CORE = [
   "werewolf/avatars/player17.webp",
   "werewolf/avatars/player18.webp",
   "werewolf/avatars/player19.webp",
+  "werewolf/avatars/player20.webp",
+  "werewolf/avatars/player21.webp",
+  "werewolf/avatars/player23.webp",
+  "werewolf/avatars/player24.webp",
 
 ];
 
 self.addEventListener("install", (event) => {
-  event.waitUntil(caches.open(CACHE).then((cache) => cache.addAll(CORE)));
+  event.waitUntil(caches.open(CACHE).then((cache) => cache.addAll(CORE)).then(() => self.skipWaiting()));
 });
 
 self.addEventListener("activate", (event) => {

@@ -5,7 +5,7 @@ import vm from 'node:vm';
 
 function worker() {
   const base='https://example.test/Mafia-offlline/';
-  const handlers={}; const stores=new Map(); let network=true,claimed=false;
+  const handlers={}; const stores=new Map(); let network=true,claimed=false,skipped=false;
   const absolute=value=>new URL(typeof value==='string'?value:value.url,base).href;
   const caches={
     async open(name) {
@@ -23,7 +23,7 @@ function worker() {
     async delete(key){return stores.delete(key);},
     async match(request) {for(const store of stores.values()) if(store.has(absolute(request))) return store.get(absolute(request));}
   };
-  const self={location:new URL(base),clients:{async claim(){claimed=true;}},addEventListener(name,fn){handlers[name]=fn;}};
+  const self={location:new URL(base),async skipWaiting(){skipped=true;},clients:{async claim(){claimed=true;}},addEventListener(name,fn){handlers[name]=fn;}};
   const fetch=async request=>{if(!network) throw new Error('offline');return `network:${request.url}`;};
   vm.runInNewContext(readFileSync('public/sw.js','utf8').replace('__BUILD_REVISION__','test'),{self,caches,fetch,URL,Response});
   const runEvent=async(name,request)=>{
@@ -31,7 +31,7 @@ function worker() {
     handlers[name]({request,waitUntil(promise){pending=promise;},respondWith(promise){pending=promise;}});
     return pending ? await pending : undefined;
   };
-  return {stores,runEvent,setOffline(){network=false;},get claimed(){return claimed;},base};
+  return {stores,runEvent,setOffline(){network=false;},get claimed(){return claimed;},get skipped(){return skipped;},base};
 }
 
 test('offline worker installs complete shell, cleans old revisions and keeps unrelated caches',async()=>{
@@ -39,10 +39,13 @@ test('offline worker installs complete shell, cleans old revisions and keeps unr
   w.stores.set('nightfall-shell-old',new Map());w.stores.set('nightfall-v2',new Map());w.stores.set('other-app',new Map());
   await w.runEvent('install');await w.runEvent('activate');
   assert.deepEqual([...w.stores.keys()].sort(),['nightfall-shell-test','other-app']);
-  assert.equal(w.claimed,true);
+  assert.equal(w.claimed,true);assert.equal(w.skipped,true);
   w.setOffline();
   assert.equal(await w.runEvent('fetch',{method:'GET',mode:'navigate',url:w.base}), 'cached:index.html');
   assert.equal(await w.runEvent('fetch',{method:'GET',mode:'no-cors',url:w.base+'werewolf/doctor.webp'}), 'cached:werewolf/doctor.webp');
+  assert.equal(await w.runEvent('fetch',{method:'GET',mode:'no-cors',url:w.base+'werewolf/audio/tap.wav'}),'cached:werewolf/audio/tap.wav');
+  for(const id of [20,21,23,24]) assert.equal(await w.runEvent('fetch',{method:'GET',mode:'no-cors',url:w.base+`werewolf/avatars/player${id}.webp`}),`cached:werewolf/avatars/player${id}.webp`);
+  assert.equal(await w.runEvent('fetch',{method:'GET',mode:'no-cors',url:w.base+'werewolf/charmer-sunrise.webp'}),'cached:werewolf/charmer-sunrise.webp');
   assert.equal(await w.runEvent('fetch',{method:'POST',mode:'cors',url:w.base}),undefined);
   assert.equal(await w.runEvent('fetch',{method:'GET',mode:'cors',url:'https://other.test/image'}),undefined);
 });

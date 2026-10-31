@@ -30,7 +30,32 @@ test('all Celebrity skin artwork is included for offline play',()=>{
 
 test('all Charmer skin artwork is included for offline play',()=>{
  const worker=readFileSync('public/sw.js','utf8');
- for(const name of ['charmer-new.webp','charmer-moonlight.webp','charmer-starlight.webp','charmer-sapphire.webp']){
+ for(const name of ['charmer-new.webp','charmer-moonlight.webp','charmer-starlight.webp','charmer-sapphire.webp','charmer-sunrise.webp']){
   assert.ok(existsSync(`public/werewolf/${name}`));assert.ok(worker.includes(`"werewolf/${name}"`));
  }
+});
+
+test('remaining new character portraits are distinct, selectable and cached offline',async()=>{
+ const {avatarFiles}=await import('../src/avatar-assignment.ts');
+ const worker=readFileSync('public/sw.js','utf8');
+ const contents=[];
+ for(const id of [20,21,23,24]){
+  const path=`werewolf/avatars/player${id}.webp`,data=readFileSync(`public/${path}`);
+  assert.ok(data.length>1000);assert.equal(data.toString('ascii',0,4),'RIFF');assert.equal(data.toString('ascii',8,12),'WEBP');
+  assert.ok(avatarFiles.includes(`./${path}`));assert.ok(worker.includes(`"${path}"`));contents.push(data.toString('base64'));
+ }
+ assert.equal(new Set(contents).size,4);
+});
+
+test('the offline tap sound is available when Web Audio is not supported',()=>{
+ const worker=readFileSync('public/sw.js','utf8');const path='werewolf/audio/tap.wav';
+ assert.ok(statSync(`public/${path}`).size>1000);assert.ok(worker.includes(`"${path}"`));
+ assert.equal(readFileSync(`public/${path}`).toString('ascii',0,4),'RIFF');
+});
+
+test('removed avatar 18 is now a cached Charmer skin',async()=>{
+ const {createHash}=await import('node:crypto');const {avatarFiles,resolveAvatar}=await import('../src/avatar-assignment.ts');
+ assert.ok(!avatarFiles.some(p=>p.includes('player22')));
+ assert.equal(resolveAvatar('./werewolf/avatars/player22.webp'),'');assert.equal(resolveAvatar('./werewolf/avatars/player22-covered.webp'),'');
+ assert.equal(createHash('sha256').update(readFileSync('public/werewolf/charmer-sunrise.webp')).digest('hex'),'2f52d0196214ae54ef36dac2d0b22971d65a471e267103c071c2e723a7991de7');
 });

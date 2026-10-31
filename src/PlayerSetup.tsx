@@ -1,7 +1,8 @@
 import { useEffect, useLayoutEffect, useRef, useState, type ChangeEvent } from 'react';
 import { readRankings } from './rankings';
+import SettingCheckbox from './SettingCheckbox';
 import { ArrowLeft, BarChart3, Camera, ChevronRight, Image as ImageIcon, Pencil, Plus, Shuffle, Share2, Trash2, User, UserPlus, Users, X } from 'lucide-react';
-import { assignAvatar, normalizeAvatars, avatarFiles, playerKey as key, type AvatarMap } from './avatar-assignment';
+import { assignAvatar, normalizeAvatars, avatarFiles, resolveAvatar, playerKey as key, type AvatarMap } from './avatar-assignment';
 
 export type { AvatarMap } from './avatar-assignment';
 type Profile = { name: string; avatar: string };
@@ -10,7 +11,7 @@ export function readLibrary(): Profile[] {
     const stored = localStorage.getItem('werewolf.library.v1');
     if (stored !== null) {
       const parsed: unknown = JSON.parse(stored);
-      if (Array.isArray(parsed)) return parsed.filter((p): p is Profile => !!p && typeof p.name === 'string' && typeof p.avatar === 'string');
+      if (Array.isArray(parsed)) return parsed.filter((p): p is Profile => !!p && typeof p.name === 'string' && typeof p.avatar === 'string').map(p => ({...p,avatar:resolveAvatar(p.avatar)}));
     }
     // Migrate names saved by the earlier version into the new player library.
     const names: unknown = JSON.parse(localStorage.getItem('werewolf.names') || '[]');
@@ -18,7 +19,7 @@ export function readLibrary(): Profile[] {
   } catch { return []; }
 }
 export function readAvatars(): AvatarMap {
-  try { const data: unknown = JSON.parse(localStorage.getItem('werewolf.avatars.v1') || '{}'); return data && typeof data === 'object' && !Array.isArray(data) ? data as AvatarMap : {}; } catch { return {}; }
+  try { const data: unknown = JSON.parse(localStorage.getItem('werewolf.avatars.v1') || '{}'); return data && typeof data === 'object' && !Array.isArray(data) ? Object.fromEntries(Object.entries(data).map(([name,src])=>[name,typeof src === 'string' ? resolveAvatar(src) : src])) as AvatarMap : {}; } catch { return {}; }
 }
 export function Avatar({ name, avatars, className = 'avatar' }: {name:string; avatars:AvatarMap; className?:string}) {
   const src = avatars[key(name)];
@@ -81,7 +82,7 @@ export default function PlayerSetup({ names, setNames, avatars, setAvatars, onCo
     if (!affected.length) return '';
     const assigned = affected.filter(n=>!unassigned.includes(n));
     return [assigned.length ? `${assigned.join(', ')} received a random unused avatar.` : '',
-      unassigned.length ? `${unassigned.join(', ')} now use initials because all 15 built-in avatars are taken.` : ''].filter(Boolean).join(' ');
+      unassigned.length ? `${unassigned.join(', ')} now use initials because all ${avatarFiles.length} built-in avatars are taken.` : ''].filter(Boolean).join(' ');
   }
   useEffect(() => {
     if (normalized.current) return;
@@ -177,7 +178,7 @@ export default function PlayerSetup({ names, setNames, avatars, setAvatars, onCo
         <span className="camera-badge"><Camera size={18}/></span>
       </button><p className="avatar-caption">CHOOSE PHOTO OR AVATAR</p>
       <label className="name-field"><User size={21}/><span className="visually-hidden">PLAYER NAME</span><input maxLength={24} value={name} onChange={e=>setName(e.target.value)} placeholder="Name" autoComplete="off"/></label>
-      <label className="remember"><span>Add to player library<small>Save for future games</small></span><input type="checkbox" checked={remember} onChange={e=>setRemember(e.target.checked)}/></label>
+      <label className="remember"><span>Add to player library<small>Save for future games</small></span><SettingCheckbox checked={remember} onChange={e=>setRemember(e.target.checked)}/></label>
       {error && <p className="warning" role="alert">{error}</p>}
       <button className="setup-primary form-submit" onClick={submit}><UserPlus size={20}/>{editing?'SAVE PLAYER':'ADD PLAYER'}</button>
       {avatar && <button className="remove-image" onClick={()=>setAvatar('')}>REMOVE IMAGE</button>}
@@ -190,7 +191,7 @@ export default function PlayerSetup({ names, setNames, avatars, setAvatars, onCo
       {shareStatus && <p className="avatar-notice" role="status">{shareStatus}</p>}<div className="setup-bottom">{view==='rankings' ? <button className="setup-primary" onClick={()=>{void shareRankings();}}><Share2 size={19}/> SHARE</button> : <button className="setup-primary" onClick={()=>setView('roster')}>DONE</button>}</div>
     </>}
     {sheet && <dialog className={`avatar-sheet ${sheet==='avatars'?'avatar-picker':''}`} ref={dialog} aria-label={sheet==='source'?'Choose photo or avatar':'Game avatars'} onCancel={e=>{e.preventDefault();closeSheet();}} onClick={e=>{if(e.target===e.currentTarget)closeSheet();}}>
-      {sheet==='source' ? <div className="sheet-inner" key="source"><div className="sheet-handle"/><button className="sheet-option" onClick={()=>setSheet('avatars')}><User size={22}/> Game avatars <ChevronRight size={18}/></button><label className="sheet-option" role="button" tabIndex={0} onKeyDown={e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();e.currentTarget.querySelector('input')?.click();}}}><ImageIcon size={22}/> Gallery <ChevronRight size={18}/><input type="file" accept="image/*" onChange={e=>{void selectPhoto(e);closeSheet();}}/></label><label className="sheet-option" role="button" tabIndex={0} onKeyDown={e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();e.currentTarget.querySelector('input')?.click();}}}><Camera size={22}/> Camera <ChevronRight size={18}/><input type="file" accept="image/*" capture="user" onChange={e=>{void selectPhoto(e);closeSheet();}}/></label><button className="sheet-cancel" onClick={closeSheet}>CANCEL</button></div> : <div className="sheet-inner picker-inner" key="avatars"><div className="sheet-handle"/><div className="picker-heading"><button className="setup-icon-button" aria-label="Back to photo options" onClick={()=>setSheet('source')}><ArrowLeft size={21}/></button><h2>GAME AVATARS</h2><button className="sheet-close" aria-label="Close avatar selection" onClick={closeSheet}><X size={22}/></button></div><p className="muted">An avatar already in use transfers to you; the previous player receives a random unused avatar.</p><div className="avatar-grid">{avatarFiles.map((src,i)=><button key={src} aria-label={`Choose avatar ${i+1}`} aria-pressed={avatar===src} className={avatar===src?'chosen':''} onClick={()=>{setAvatar(src);closeSheet();}}><img src={src} alt=""/>{names.find(n=>key(n)!==key(editing || name) && avatars[key(n)]===src) && <span className="avatar-owner">IN USE</span>}</button>)}</div></div>}
+      {sheet==='source' ? <div className="sheet-inner" key="source"><div className="sheet-handle"/><button className="sheet-option" onClick={()=>setSheet('avatars')}><User size={22}/> Game avatars <ChevronRight size={18}/></button><label className="sheet-option" role="button" tabIndex={0} onKeyDown={e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();e.currentTarget.querySelector('input')?.click();}}}><ImageIcon size={22}/> Gallery <ChevronRight size={18}/><input type="file" accept="image/*" onChange={e=>{void selectPhoto(e);closeSheet();}}/></label><label className="sheet-option" role="button" tabIndex={0} onKeyDown={e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();e.currentTarget.querySelector('input')?.click();}}}><Camera size={22}/> Camera <ChevronRight size={18}/><input type="file" accept="image/*" capture="user" onChange={e=>{void selectPhoto(e);closeSheet();}}/></label><button className="sheet-cancel" onClick={closeSheet}>CANCEL</button></div> : <div className="sheet-inner picker-inner" key="avatars"><div className="sheet-handle"/><div className="picker-heading"><button className="setup-icon-button" aria-label="Back to photo options" onClick={()=>setSheet('source')}><ArrowLeft size={21}/></button><h2>GAME AVATARS</h2><button className="sheet-close" aria-label="Close avatar selection" onClick={closeSheet}><X size={22}/></button></div><p className="muted">An avatar already in use transfers to you; the previous player receives a random unused avatar.</p><div className="avatar-grid">{avatarFiles.map((src,i)=><button key={src} aria-label={`Choose avatar ${i+1}`} aria-pressed={avatar===src} className={avatar===src?'chosen':''} onClick={()=>{setAvatar(src);closeSheet();}}><img src={src} alt=""/><span className="avatar-number" aria-hidden="true">{i+1}</span>{names.find(n=>key(n)!==key(editing || name) && avatars[key(n)]===src) && <span className="avatar-owner">IN USE</span>}</button>)}</div></div>}
     </dialog>}
   </div></div>;
 }

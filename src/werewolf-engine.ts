@@ -1,43 +1,124 @@
-export type Role = 'werewolf' | 'villager' | 'doctor' | 'seer' | 'chef' | 'mayor' | 'templar' | 'muted' | 'jester' | 'necromancer' | 'bodyguard' | 'sheriff' | 'serialkiller' | 'survivor' | 'visitor' | 'psychic' | 'celebrity' | 'detective' | 'instigator' | 'strongwolf' | 'sickman' | 'lonewolf' | 'wolfpup' | 'journalist' | 'raven' | 'rabidwolf' | 'whitewolf' | 'gambler' | 'mindflayer' | 'intelligence' | 'thief' | 'police' | 'hypnowolf' | 'charmer';
-export type Player = { id: number; name: string; role: Role; alive: boolean; escaped?: boolean };
-export type Settings = { firstNightSafe: boolean; revealDead: boolean; secretVotes: boolean; allowSkip: boolean; passiveWait: boolean; passiveWaitSeconds: number; allRolesWait: boolean; allRolesWaitSeconds: number; doctorSelfProtect: boolean; doctorRepeatProtect: boolean; sheriffEveryNight: boolean; templarUses: number; necromancerUses: number; instigatorMaxUses: number; celebrityAudience: number; intelligenceInterval: number; detectiveShowNames: boolean; seerShowExactRole: boolean; sickStartingNights: number; sickDoctorBonus: number; mayorDoubleVote: boolean; chefNeutralsTogether: boolean; visitorDangerousRoles: boolean; visitorAttackedTarget: boolean; bodyguardProtectAll: boolean; policeRepeatTarget: boolean; journalistDrawing: boolean; psychicShowFriends: boolean; roleWaitSeconds: Partial<Record<Role, number>>; wolfPupAttackCount: number; rabidCanInfect: boolean; hypnoMaxUses: number; wolfRandomTies: boolean; loneWolfInterval: number; strongWolfInterval: number; survivorShieldCount: number; mindStartingParasites: number; mindRegenPercent: number; gamblerPredictions: number; gamblerBetProtection: boolean; ravenReflectAttackers: boolean; serialKillerInterval: number; thiefAttackInterval: number; whiteWolfBetrayPack: boolean; charmerFirstNight: number; randomUniqueRoles: boolean; distributionFollowChances: boolean; roleChances: Partial<Record<Role, number>>; sounds: boolean; discussionMinutes: number; madmanCount: number };
+export type Role = 'madman' | 'werewolf' | 'villager' | 'doctor' | 'seer' | 'chef' | 'mayor' | 'templar' | 'muted' | 'jester' | 'necromancer' | 'bodyguard' | 'sheriff' | 'serialkiller' | 'survivor' | 'visitor' | 'psychic' | 'celebrity' | 'detective' | 'instigator' | 'strongwolf' | 'sickman' | 'lonewolf' | 'wolfpup' | 'journalist' | 'raven' | 'rabidwolf' | 'whitewolf' | 'gambler' | 'mindflayer' | 'intelligence' | 'thief' | 'police' | 'hypnowolf' | 'charmer';
+export type Player = { id: number; name: string; role: Role; alive: boolean; escaped?: boolean; joinedPack?: boolean };
+export type Settings = { firstNightSafe: boolean; revealDead: boolean; secretVotes: boolean; allowSkip: boolean; passiveWait: boolean; passiveWaitSeconds: number; allRolesWait: boolean; allRolesWaitSeconds: number; doctorSelfProtect: boolean; doctorRepeatProtect: boolean; sheriffEveryNight: boolean; templarUses: number; necromancerUses: number; instigatorMaxUses: number; celebrityAudience: number; intelligenceInterval: number; detectiveShowNames: boolean; seerShowExactRole: boolean; sickStartingNights: number; sickDoctorBonus: number; mayorDoubleVote: boolean; chefNeutralsTogether: boolean; visitorDangerousRoles: boolean; visitorAttackedTarget: boolean; bodyguardProtectAll: boolean; policeRepeatTarget: boolean; policeNotifyBlocked: boolean; journalistDrawing: boolean; psychicShowFriends: boolean; roleWaitSeconds: Partial<Record<Role, number>>; rabidCanInfect: boolean; hypnoMaxUses: number; hypnoDuration: number; wolfRandomTies: boolean; loneWolfInterval: number; strongWolfInterval: number; survivorShieldCount: number; mindStartingParasites: number; mindRegenPercent: number; gamblerPredictions: number; gamblerBetProtection: boolean; ravenReflectAttackers: boolean; serialKillerInterval: number; thiefAttackInterval: number; whiteWolfBetrayPack: boolean; charmerFirstNight: number; charmerMessages: boolean; randomUniqueRoles: boolean; distributionFollowChances: boolean; distributionUniqueRoles: boolean; randomFollowChances: boolean; roleChances: Partial<Record<Role, number>>; disabledRandomRoles: Role[]; sounds: boolean; buttonSounds: boolean; haptics: boolean; discussionMinutes: number; madmanCount: number };
 export const roles: Record<Role, {name: string; description: string; team: 'wolf' | 'village' | 'neutral'}> = {
-  charmer: { name: 'Charmer', team: 'neutral', description: 'Choose another player to become your friend. Together you form an independent Friends team. You win when all opponents are gone, even if only one friend remains alive.' },
-  police: { name: 'Police', team: 'village', description: 'Detain one player at night to block their role action. You cannot detain the same player on consecutive nights.' },
-  hypnowolf: { name: 'Hypnotist Werewolf', team: 'wolf', description: 'Vote with the pack. Once per game, hypnotize a villager; their ability later fails or gives misleading results.' },
-  thief: { name: 'Thief', team: 'neutral', description: 'Visit and kill a player at night. If your attack succeeds, steal their role and join their team.' },
-  intelligence: { name: 'Intelligence Chief', team: 'village', description: 'Every two nights, receive intelligence about players. One of the named players may be a Werewolf or neutral, but not all intelligence is accurate.' },
-  mindflayer: { name: 'Mind Flayer', team: 'neutral', description: 'Plant a secret parasite in another player each night. Win when all other living players are parasitized. Skip your turn for a 20% chance to generate a parasite.' },
-  gambler: { name: 'Gambler', team: 'neutral', description: 'Bet on who will be executed. While betting, you are protected at night. After two correct predictions, survive the next night to escape victorious; a wrong prediction brings creditors the next night unless a Doctor saves you.' },
-  whitewolf: { name: 'White Werewolf', team: 'neutral', description: 'You appear as a Werewolf and vote with the pack, but you play alone. Be the last player alive; if the pack wins, you lose.' },
-  rabidwolf: { name: 'Rabid Werewolf', team: 'wolf', description: 'On the first night, infect a player and turn them into a Werewolf. After that, vote with the pack each night.' },
-  raven: { name: 'Raven', team: 'neutral', description: 'Each night, mark a player or activate your curse to kill all marked players. If a marked player attacks you, they die instead. Survive alone to win.' },
-  journalist: { name: 'Journalist', team: 'village', description: 'Write a headline and draw a picture at night. Your newspaper is revealed to everyone in the morning.' },
-  wolfpup: { name: 'Wolf Pup', team: 'wolf', description: 'Vote with the pack each night. If you die, the pack can attack two players the next night.' },
-  lonewolf: { name: 'Lone Werewolf', team: 'wolf', description: 'You win with the wolves, but neither you nor the pack know each other. Attack one player independently, before the pack attack.' },
-  sickman: { name: 'Sick Man', team: 'village', description: 'You die after three nights unless a Doctor helps. Each Doctor visit adds two nights.' },
-  strongwolf: { name: 'Strong Werewolf', team: 'wolf', description: 'You know the pack and win with the wolves. Independently attack one player each night.' },
-  werewolf: { name: 'Werewolf', team: 'wolf', description: 'Vote with your pack to attack a player at night. Eliminate the village without being discovered.' },
-  villager: { name: 'Villager', team: 'village', description: 'You have no night ability. Discuss, investigate through conversation, and vote out the werewolves.' },
-  doctor: { name: 'Doctor', team: 'village', description: 'Protect one player from the werewolf attack each night. You may protect yourself, but not the same player on consecutive nights.' },
-  detective: { name: 'Detective', team: 'village', description: 'Choose a player to investigate each night. On your next turn, learn who visited them during the previous night.' },
-  instigator: { name: 'Instigator', team: 'village', description: 'Twice per game, provoke a player at night. They begin the next vote with two votes against them.' },
-  psychic: { name: 'Psychic', team: 'village', description: 'Use your crystal ball to learn a player’s team each night.' },
-  celebrity: { name: 'Celebrity', team: 'village', description: 'You are famous: each night one other living player learns your identity.' },
-  serialkiller: { name: 'Serial Killer', team: 'neutral', description: 'Kill one player each night and be the last one standing. You appear as a Villager to the Seer.' },
-  survivor: { name: 'Survivor', team: 'neutral', description: 'Survive until the end of the game. You have three shields to protect yourself at night.' },
-  visitor: { name: 'Visitor', team: 'village', description: 'Visit a player each night. You die if they are attacked or if you visit a Werewolf or Serial Killer.' },
-  bodyguard: { name: 'Bodyguard', team: 'village', description: 'Protect a villager each night. If your target would die, you sacrifice yourself in their place.' },
-  sheriff: { name: 'Sheriff', team: 'village', description: 'You may shoot another player at night. Use your one bullet carefully, because an innocent can be killed.' },
-  seer: { name: 'Seer', team: 'village', description: 'Each night, learn the true role of one player.' },
-  jester: { name: 'Jester', team: 'neutral', description: 'Your goal is to be executed by the village vote. If you succeed, you win immediately and the game ends.' },
+  madman: { name: 'Madman', team: 'village', description: 'You see a different village role and believe it is yours. Your ability does not work or may give a wrong answer. You learn you were the Madman when the game ends.' },
+  charmer: { name: 'Charmer', team: 'neutral', description: 'Pick one player to be your friend. You and your friend are the Friends team. Your team wins when everyone else is gone, even if only one of you is still alive.' },
+  police: { name: 'Police', team: 'village', description: 'Each night, pick one player to stop their night ability. The morning report says whose ability was blocked. You cannot pick the same player two nights in a row.' },
+  hypnowolf: { name: 'Hypnosis Wolf', team: 'wolf', description: 'You cannot vote for an attack. Once per game, you can hypnotize a Villager. Their next ability will fail or give a wrong answer.' },
+  thief: { name: 'Thief', team: 'neutral', description: 'At night, attack one player. If you kill them, you take their role and join their team.' },
+  intelligence: { name: 'Intelligence Chief', team: 'village', description: 'Every two nights, you get names of players. One of them may be a Werewolf or a player on their own team. The information may be wrong.' },
+  mindflayer: { name: 'Mind Flayer', team: 'neutral', description: 'Each night, put a secret parasite (a tiny creature) on another player. You win when every other living player has one. You start with three. If you skip a turn, you have a 20% chance to get one more.' },
+  gambler: { name: 'Gambler', team: 'neutral', description: 'Guess who will be voted out. You are protected at night while you have a guess. After two correct guesses, stay alive through the next night to win and leave. If you guess wrong, people you owe money to will come for you the next night. A Doctor can save you.' },
+  whitewolf: { name: 'White Werewolf', team: 'neutral', description: 'The other Werewolves think you are on their team, and you vote with them at night. But you play alone. You must be the last player alive to win. If the Werewolves win, you lose.' },
+  rabidwolf: { name: 'Infecting Wolf', team: 'wolf', description: 'On the first night, choose a player to turn into a Werewolf. From the next night, vote with the other Werewolves to choose someone to attack.' },
+  raven: { name: 'Raven', team: 'neutral', description: 'Each night, mark a player or use your curse to kill everyone you have marked. If a marked player attacks you, they die instead. Be the last player alive to win.' },
+  journalist: { name: 'Journalist', team: 'village', description: 'At night, write a headline and draw a picture. Everyone sees your newspaper in the morning.' },
+  wolfpup: { name: 'Wolf Pup', team: 'wolf', description: 'You cannot vote for an attack. If you die, the other Werewolves can attack two players in the next night.' },
+  lonewolf: { name: 'Lone Werewolf', team: 'wolf', description: 'You win with the Werewolves, but you do not know who they are and they do not know you. Attack one player on your own each night, before the other Werewolves attack.' },
+  sickman: { name: 'Sick Man', team: 'village', description: 'You will die after three nights unless a Doctor helps you. Each time a Doctor protects you, you get two more nights.' },
+  strongwolf: { name: 'Strong Werewolf', team: 'wolf', description: 'You know the other Werewolves and win with them. Each night, attack one player on your own.' },
+  werewolf: { name: 'Werewolf', team: 'wolf', description: 'At night, vote with the other Werewolves to choose a player to attack. Try to defeat the village without being found out.' },
+  villager: { name: 'Villager', team: 'village', description: 'You have no special action at night. Talk with the other players, find the Werewolves, and vote them out.' },
+  doctor: { name: 'Doctor', team: 'village', description: 'Each night, pick one player to protect from Werewolf attacks. You can pick yourself, but you cannot pick the same player two nights in a row.' },
+  detective: { name: 'Detective', team: 'village', description: 'Each night, pick a player to watch. On your next turn, you will learn who visited that player the night before.' },
+  instigator: { name: 'Vote Marker', team: 'village', description: 'Up to twice per game, pick a player at night. In the next vote, that player starts with two votes against them.' },
+  psychic: { name: 'Team Checker', team: 'village', description: 'Each night, pick one player. Your crystal ball will tell you which team they are on.' },
+  celebrity: { name: 'Celebrity', team: 'village', description: 'You are famous! Each night, one other living player learns that you are the Celebrity.' },
+  serialkiller: { name: 'Serial Killer', team: 'neutral', description: 'Attack one player each night. You win if you are the last player alive. If the Seer checks you, you look like a Villager.' },
+  survivor: { name: 'Survivor', team: 'neutral', description: 'Stay alive until the game ends to win. You have three shields you can use to protect yourself at night.' },
+  visitor: { name: 'Visitor', team: 'village', description: 'Each night, visit one player. You can die if that player is attacked, or if you visit a Werewolf or Serial Killer. If the first night is safe, visiting will not kill you that night.' },
+  bodyguard: { name: 'Bodyguard', team: 'village', description: 'Each night, pick a Villager to protect. If that player would die, you die instead.' },
+  sheriff: { name: 'Sheriff', team: 'village', description: 'You have one bullet for the whole game. At night, you can use it to shoot another player. Be careful: you might shoot a Villager.' },
+  seer: { name: 'Seer', team: 'village', description: 'Each night, pick one player to learn their role. Some roles can look like a different role.' },
+  jester: { name: 'Jester', team: 'neutral', description: 'Make the other players vote you out. If they do, you win right away and the game ends.' },
   necromancer: { name: 'Necromancer', team: 'village', description: 'Once per game, bring one dead player back to life.' },
-  mayor: { name: 'Mayor', team: 'village', description: 'Once per game, declare an emergency assembly at night to protect the village and reveal yourself. Your vote then counts twice.' },
-  templar: { name: 'Templar', team: 'village', description: 'Once per game, use holy water on a player. A werewolf dies; if the target is innocent, you die instead.' },
-  muted: { name: 'Muted', team: 'village', description: 'You cannot speak during the game. Communicate using gestures and vote with the village.' },
-  chef: { name: 'Chef', team: 'village', description: 'Invite two players to dinner each night. Learn whether they are on the same team.' },
+  mayor: { name: 'Mayor', team: 'village', description: 'Once per game, call an emergency meeting at night. This protects village players from Werewolf attacks that night and tells everyone you are the Mayor. After that, your vote counts twice.' },
+  templar: { name: 'Wolf Hunter', team: 'village', description: 'Once per game, use water on one player. If they are a Werewolf, they die. If they are not a Werewolf, you die instead.' },
+  muted: { name: 'Muted', team: 'village', description: 'You cannot talk during the game. Use hand signs to communicate, and vote with the village.' },
+  chef: { name: 'Chef', team: 'village', description: 'Each night, pick two players for dinner. You will learn if they are on the same team.' },
 };
-export const defaults: Settings = {firstNightSafe: true, revealDead: true, secretVotes: true, allowSkip: true, passiveWait: false, passiveWaitSeconds: 5, allRolesWait: false, allRolesWaitSeconds: 5, doctorSelfProtect: true, doctorRepeatProtect: false, sheriffEveryNight: false, templarUses: 1, necromancerUses: 1, instigatorMaxUses: 2, celebrityAudience: 1, intelligenceInterval: 2, detectiveShowNames: true, seerShowExactRole: true, sickStartingNights: 3, sickDoctorBonus: 2, mayorDoubleVote: true, chefNeutralsTogether: true, visitorDangerousRoles: true, visitorAttackedTarget: true, bodyguardProtectAll: false, policeRepeatTarget: false, journalistDrawing: true, psychicShowFriends: true, roleWaitSeconds: {}, wolfPupAttackCount: 2, rabidCanInfect: true, hypnoMaxUses: 1, wolfRandomTies: false, loneWolfInterval: 1, strongWolfInterval: 1, survivorShieldCount: 3, mindStartingParasites: 3, mindRegenPercent: 20, gamblerPredictions: 2, gamblerBetProtection: true, ravenReflectAttackers: true, serialKillerInterval: 1, thiefAttackInterval: 1, whiteWolfBetrayPack: true, charmerFirstNight: 1, randomUniqueRoles: false, distributionFollowChances: false, roleChances: {}, sounds: false, discussionMinutes: 3, madmanCount: 0};
+export const defaults: Settings = {firstNightSafe: true, revealDead: true, secretVotes: true, allowSkip: true, passiveWait: false, passiveWaitSeconds: 5, allRolesWait: false, allRolesWaitSeconds: 5, doctorSelfProtect: true, doctorRepeatProtect: false, sheriffEveryNight: false, templarUses: 1, necromancerUses: 1, instigatorMaxUses: 2, celebrityAudience: 1, intelligenceInterval: 2, detectiveShowNames: true, seerShowExactRole: true, sickStartingNights: 3, sickDoctorBonus: 2, mayorDoubleVote: true, chefNeutralsTogether: true, visitorDangerousRoles: true, visitorAttackedTarget: true, bodyguardProtectAll: false, policeRepeatTarget: false, policeNotifyBlocked: true, journalistDrawing: true, psychicShowFriends: true, roleWaitSeconds: {}, rabidCanInfect: true, hypnoMaxUses: 1, hypnoDuration: 0, wolfRandomTies: false, loneWolfInterval: 1, strongWolfInterval: 1, survivorShieldCount: 3, mindStartingParasites: 3, mindRegenPercent: 20, gamblerPredictions: 2, gamblerBetProtection: true, ravenReflectAttackers: true, serialKillerInterval: 1, thiefAttackInterval: 1, whiteWolfBetrayPack: true, charmerFirstNight: 1, charmerMessages: false, randomUniqueRoles: false, distributionFollowChances: false, distributionUniqueRoles: false, randomFollowChances: true, roleChances: {}, disabledRandomRoles: [], sounds: true, buttonSounds: true, haptics: true, discussionMinutes: 3, madmanCount: 0};
+/** One source of role instructions for both the role card and the night turn. */
+export function roleDescription(role: Role, settings: Settings): string {
+  const times = (n: number) => n === 1 ? 'once' : n === 2 ? 'twice' : `${n} times`;
+  const every = (n: number) => n === 1 ? 'each night' : `every ${n} nights (night ${n}, ${n * 2}, and so on)`;
+  const vote = 'Vote with the other Werewolves to pick someone to attack.';
+  const tie = settings.wolfRandomTies
+    ? 'If the votes are tied, the game picks at random from the tied players.'
+    : 'If the votes are tied, the tied players are not attacked.';
+  let text: string;
+  switch (role) {
+    case 'madman': text = 'You are on the Villagers team. You see a different village role and think it is yours. Your ability does not work or may give a wrong answer. You find out you are the Madman when the game ends.'; break;
+    case 'werewolf': text = `${vote} ${tie} You win with the Werewolves.`; break;
+    case 'wolfpup': text = `You cannot attack at night. If you die, Werewolves who can attack may pick up to two players in the next night. If Hypnosis Wolf can still use hypnosis, they can pick up to two players in the next night${settings.rabidCanInfect ? '. Infecting Wolf can turn up to two players into Werewolves in the next night' : ''}.`; break;
+    case 'whitewolf': text = `${vote} You play alone, not with the Werewolves. ${settings.whiteWolfBetrayPack ? 'You can vote to attack other Werewolves.' : 'You cannot vote to attack Werewolves you know.'} ${tie} You win only if you are the last player alive.`; break;
+    case 'hypnowolf': text = `You cannot vote for an attack. Pick a Villager to hypnotize ${settings.hypnoMaxUses===0 ? 'each night' : `${times(settings.hypnoMaxUses)} per game`}. Their night action will not work or may give a wrong answer. This starts on the next night. It lasts ${settings.hypnoDuration===0 ? 'for the rest of the game' : `for ${settings.hypnoDuration} ${settings.hypnoDuration===1?'night':'nights'}`}. If the Wolf Pup dies, you can pick up to two players in the next night.`; break;
+    case 'rabidwolf': text = `${settings.rabidCanInfect ? 'On the first night, pick a player to turn into a Werewolf. If you pick a Lone Werewolf, they keep their role and get to know the other Werewolves. If the Wolf Pup dies, you can turn up to two players into Werewolves in the next night instead of voting to attack.' : 'You cannot turn players into Werewolves.'} From night 2, ${vote.charAt(0).toLowerCase() + vote.slice(1)} ${tie}`; break;
+    case 'lonewolf': text = `You win with the Werewolves. You do not know who they are, and they do not know you${settings.rabidCanInfect ? ' unless the Infecting Wolf picks you. If picked, you get to know the other Werewolves but keep your role' : ''}. Attack one player on your own ${every(settings.loneWolfInterval)}, including another Werewolf${settings.rabidCanInfect ? ' before you get to know them' : ''}. If another Werewolf on your team can attack, your attack has a 25% chance to work. If you are the only Werewolf on your team who can attack, your attack has a 100% chance to work. If the Charmer picks you as a friend, you cannot attack your friend.`; break;
+    case 'strongwolf': text = `You win with the Werewolves. Attack one player on nights ${settings.firstNightSafe ? '3, 5, 7' : '1, 3, 5'} and so on. ${settings.firstNightSafe ? 'From night 2, if' : 'If'} you are the only Werewolf on your team who can attack, you can attack every night.`; break;
+    case 'villager': text = 'You have no action at night. Talk with everyone and vote out the Werewolves.'; break;
+    case 'doctor': text = `Each night, pick one player to save from Werewolf attacks. ${settings.doctorSelfProtect ? 'You can pick yourself.' : 'You cannot protect yourself.'} ${settings.doctorRepeatProtect ? 'You can pick the same player two nights in a row.' : 'You cannot pick the same player two nights in a row.'}`; break;
+    case 'seer': text = `Each night, pick one player. ${settings.seerShowExactRole ? 'The game tells you their role.' : 'The game tells you if they look like a Werewolf.'} Some roles can look like a different role.`; break;
+    case 'chef': text = `Each night, pick two players. The game tells you if they are on the same team. ${settings.chefNeutralsTogether ? 'Players with neutral roles count as one team, unless they are Friends.' : 'Players with neutral roles count as different teams, unless they are Friends.'}`; break;
+    case 'mayor': text = `At night, you can call a meeting once per game. This saves village players from Werewolf attacks that night. Everyone is told you are the Mayor. After this, your vote counts ${settings.mayorDoubleVote ? 'twice' : 'once'}.`; break;
+    case 'templar': text = `Use water on a player ${times(settings.templarUses)} per game. If they are a Werewolf, they die. If not, you die.`; break;
+    case 'muted': text = 'You cannot talk during the game. Use hand signs to talk and vote with the village.'; break;
+    case 'jester': text = 'Make the other players vote you out. If they do, you win and the game ends.'; break;
+    case 'necromancer': text = `Bring a dead player back to life. You can do this ${times(settings.necromancerUses)} per game.`; break;
+    case 'bodyguard': text = `Each night, pick ${settings.bodyguardProtectAll ? 'a player from any team' : 'a village player'} to protect. If they would die, you die instead. Picking a player does not tell you their team.`; break;
+    case 'sheriff': text = `At night, you can shoot a player. ${settings.sheriffEveryNight ? 'You can shoot once each night.' : 'You have one bullet for the whole game.'} Be careful: you can shoot a Villager.`; break;
+    case 'serialkiller': text = `Attack one player ${every(settings.serialKillerInterval)}. Be the last player alive to win. The Seer sees you as a Villager.`; break;
+    case 'survivor': text = `Stay alive until the game ends to win. You have up to ${settings.survivorShieldCount} ${settings.survivorShieldCount === 1 ? 'shield' : 'shields'} to save yourself at night.`; break;
+    case 'visitor': {
+      const dangers = settings.visitorDangerousRoles && settings.visitorAttackedTarget
+        ? 'You die if you visit a Werewolf or Serial Killer, or if the player you visit is attacked.'
+        : settings.visitorDangerousRoles
+          ? 'You die if you visit a Werewolf or Serial Killer, but not just because the player you visit is attacked.'
+          : settings.visitorAttackedTarget
+            ? 'Visiting a Werewolf or Serial Killer will not kill you, but you die if the player you visit is attacked.'
+            : 'Visiting a Werewolf or Serial Killer will not kill you, and neither will an attack on the player you visit.';
+      text = `Each night, visit one player. ${dangers} You can still die if someone attacks you.`; break;
+    }
+    case 'psychic': text = `Each night, pick one player. The game tells you their team. ${settings.psychicShowFriends ? 'Friends are shown as the Friends team.' : 'Friends are shown as neutral.'}`; break;
+    case 'celebrity': text = `Each night, up to ${settings.celebrityAudience} other ${settings.celebrityAudience === 1 ? 'player is told' : 'players are told'} that you are the Celebrity.`; break;
+    case 'detective': text = `Each night, pick a player to watch. On your next turn, the game tells you ${settings.detectiveShowNames ? 'who visited them' : 'how many players visited them'} that night.`; break;
+    case 'instigator': text = `Pick a player at night. They start the next vote with two votes against them. You can do this ${times(settings.instigatorMaxUses)} per game.`; break;
+    case 'sickman': text = `You will die after ${settings.sickStartingNights} ${settings.sickStartingNights === 1 ? 'night' : 'nights'} without help. ${settings.sickDoctorBonus===0 ? 'A Doctor cannot give you more nights' : `Each time a Doctor picks you, you get ${settings.sickDoctorBonus} more ${settings.sickDoctorBonus === 1 ? 'night' : 'nights'}`}.`; break;
+    case 'journalist': text = `At night, write a short news message${settings.journalistDrawing ? ' and draw a picture' : ''}. Everyone sees it in the morning.`; break;
+    case 'raven': text = `Each night, pick a player to mark, or kill everyone you marked. ${settings.ravenReflectAttackers ? 'If a marked player attacks you, they die instead.' : 'A marked player can still kill you by attacking you.'} Be the last player alive to win.`; break;
+    case 'gambler': text = `At night, guess who will be voted out. ${settings.gamblerBetProtection ? 'Making a guess saves you from attacks that night.' : 'Making a guess does not save you from attacks.'} After ${settings.gamblerPredictions} correct ${settings.gamblerPredictions === 1 ? 'guess' : 'guesses'}, stay alive through the next night to win and leave. If you guess wrong, you will die the next night unless a Doctor saves you.`; break;
+    case 'mindflayer': text = `Put a tiny creature on one player each night. You start with ${settings.mindStartingParasites} ${settings.mindStartingParasites===1 ? 'tiny creature' : 'tiny creatures'}. Get one onto every other living player to win. If you skip, you have a ${settings.mindRegenPercent}% chance to get one more.`; break;
+    case 'intelligence': text = `${settings.intelligenceInterval === 1 ? 'Each night' : `Every ${settings.intelligenceInterval} nights`}, the game gives you names. One may be a Werewolf or someone who plays alone. The game can be wrong.`; break;
+    case 'thief': text = `Attack one player ${every(settings.thiefAttackInterval)}. If they die and you stay alive, you take their role and join their team.`; break;
+    case 'police': text = `Each night, pick a player. Their night action will not work. ${settings.policeNotifyBlocked ? 'In the morning report, everyone sees which player was blocked.' : 'They are not told.'} ${settings.policeRepeatTarget ? 'You can pick the same player two nights in a row.' : 'You cannot pick the same player two nights in a row.'}`; break;
+    case 'charmer': text = `From night ${settings.charmerFirstNight}, pick one player to be your friend. You are the Friends team. Your team wins when everyone else is gone, even if only one friend is alive. A friend who can attack as a Werewolf can secretly attack Werewolves they know.${settings.charmerMessages ? ' You can send your friend a private message at night. They can reply to your message. Messages arrive on the next night.' : ' You cannot send private messages to your friend.'}`; break;
+  }
+  if (settings.firstNightSafe) {
+    if (role === 'visitor') text += ' On the first night, visiting cannot kill you.';
+    if (role === 'mayor') text += ' You cannot call a meeting on the first night.';
+    if (role === 'survivor') text += ' Save your shields for later: you cannot use one on the first night.';
+  }
+  const wait = role==='madman' ? 0 : settings.roleWaitSeconds?.[role] || 0;
+  if (wait > 0) text += ` Wait ${wait} ${wait === 1 ? 'second' : 'seconds'} before ending your turn.`;
+  // Put each idea on its own line so it is easier to read.
+  return text.replace(/\.\s+/g,'\n').replace(/\.$/,'');
+}
+/** Only use information already visible to the current Strong Werewolf. */
+export function turnRoleDescription(role:Role, settings:Settings, night:number, knownWolves:number):string {
+  if(role!=='strongwolf')return roleDescription(role,settings);
+  const known=knownWolves===0 ? 'You do not know any other Werewolves' : 'You know some other Werewolves';
+  const tonight=night===1 && settings.firstNightSafe
+    ? 'Wait until the next night to attack'
+    : night%2===1
+      ? 'Tonight you can pick one player to attack'
+      : 'Pick one player tonight';
+  const rule=night%2===0 && !(night===1 && settings.firstNightSafe)
+    ? 'You can attack every night if you are the only Werewolf on your team who can attack'
+    : 'If you are the only Werewolf on your team who can attack, you can attack every night';
+  const wait=settings.roleWaitSeconds?.[role] || 0;
+  return `${known}\nYou win with the Werewolves\n${tonight}\n${rule}${wait ? `\nWait ${wait} ${wait===1?'second':'seconds'} before ending your turn` : ''}`;
+}
 export function shuffle<T>(items: T[], random = Math.random): T[] {
   const out = [...items];
   for (let i = out.length - 1; i > 0; i--) { const j = Math.floor(random() * (i + 1)); [out[i], out[j]] = [out[j], out[i]]; }
@@ -56,11 +137,44 @@ export function seerReading(role: Role, showExactRole = true): string {
 export function knownPackmate(a: Role, b: Role): boolean {
   return (['werewolf','strongwolf','wolfpup','rabidwolf','whitewolf','hypnowolf'].includes(a)) && (['werewolf','strongwolf','wolfpup','rabidwolf','whitewolf','hypnowolf'].includes(b));
 }
-// A White Werewolf can betray known packmates when casting a pack vote.
-export function canWolfTarget(actor: Role, target: Role, whiteCanBetray = true): boolean {
-  return (actor === 'whitewolf' && whiteCanBetray) || !knownPackmate(actor, target);
+/** A recruited Lone Wolf keeps their role but is known to the pack. */
+export function packIdentity(player: Player): Role {
+  return player.role==='lonewolf' && player.joinedPack ? 'werewolf' : player.role;
 }
-export type WinningSide = 'village' | 'wolf' | 'jester' | 'serialkiller' | 'raven' | 'whitewolf' | 'mindflayer' | 'friends' | 'draw';
+export function knownPlayerPackmates(a:Player,b:Player):boolean {
+  return knownPackmate(packIdentity(a),packIdentity(b));
+}
+// A White Werewolf can betray known packmates when casting a pack vote.
+export function canWolfTarget(actor: Role, target: Role, whiteCanBetray = true, friendsCanBetray = false): boolean {
+  return friendsCanBetray || (actor === 'whitewolf' && whiteCanBetray) || !knownPackmate(actor, target);
+}
+/** Other living, unblocked allied wolves who can actually attack this night. */
+export function otherWolfCanAttack(actor:Player, players:Player[], round:number, settings:Settings, enraged:boolean, blocked:ReadonlySet<number>, friends:Record<number,number>={}):boolean {
+  if(round===1 && settings.firstNightSafe)return false;
+  const allied=(p:Player)=>friends[actor.id]!==undefined ? friends[actor.id]===p.id : friends[p.id]===undefined && roles[p.role].team==='wolf';
+  const canHit=(p:Player)=>players.some(t=>t.alive && t.id!==p.id && friends[p.id]!==t.id && canWolfTarget(packIdentity(p),packIdentity(t),settings.whiteWolfBetrayPack,friends[p.id]!==undefined));
+  const capable=(p:Player)=>{
+    if(!p.alive || blocked.has(p.id) || !allied(p) || !canHit(p))return false;
+    if(p.role==='werewolf')return true;
+    if(p.role==='rabidwolf')return round>1 && !(settings.rabidCanInfect && enraged);
+    if(p.role==='lonewolf')return round % settings.loneWolfInterval===0;
+    if(p.role==='strongwolf')return round%2===1;
+    return p.role==='whitewolf';
+  };
+  if(players.some(p=>p.id!==actor.id && capable(p)))return true;
+  // On even nights another Strong Wolf can be the fallback attacker too.
+  if(round%2===0 && actor.role==='strongwolf')return players.some(p=>p.id!==actor.id && p.role==='strongwolf' && p.alive && !blocked.has(p.id) && allied(p) && canHit(p));
+  return false;
+}
+export function strongWolfAttackAvailable(actor:Player,players:Player[],round:number,settings:Settings,enraged:boolean,blocked:ReadonlySet<number>,friends:Record<number,number>={}):boolean {
+  if(!actor.alive || blocked.has(actor.id) || (round===1 && settings.firstNightSafe))return false;
+  return round%2===1 || !otherWolfCanAttack(actor,players,round,settings,enraged,blocked,friends);
+}
+export function loneWolfAttackSucceeds(actor:Player,players:Player[],round:number,settings:Settings,enraged:boolean,blocked:ReadonlySet<number>,friends:Record<number,number>={},random:()=>number=Math.random):boolean {
+  return !otherWolfCanAttack(actor,players,round,settings,enraged,blocked,friends) || random()<0.25;
+}
+
+export type WinningSide = 'village' | 'wolf' | 'jester' | 'serialkiller' | 'raven' | 'whitewolf' | 'mindflayer' | 'friends' | 'wolf-friends' | 'draw';
 /** Paired players retain their roles but belong to an independent Friends team. */
 export function teamOfPlayer(player: Player, lovers: Record<number,number> = {}): 'village'|'wolf'|'neutral'|'friends' {
   return lovers[player.id] !== undefined ? 'friends' : roles[player.role].team;
@@ -78,6 +192,13 @@ export function winner(players: Player[], lovers: Record<number,number> = {}): W
     const partner=lovers[p.id];
     if (partner !== undefined && alive.every(q=>q.id===p.id || q.id===partner)) return 'friends';
   }
+  // A permanent two-player stalemate: the friend cannot attack at all and
+  // the other wolf still sees them as a packmate. Both teams share the win.
+  if (alive.length===2) {
+    const friend=alive.find(p=>lovers[p.id]!==undefined && roles[p.role].team==='wolf');
+    const other=alive.find(p=>lovers[p.id]===undefined && roles[p.role].team==='wolf');
+    if (friend && other && ['wolfpup','hypnowolf'].includes(friend.role) && knownPlayerPackmates(other,friend)) return 'wolf-friends';
+  }
   const unpaired = alive.filter(p=>lovers[p.id]===undefined);
   const livingLovers = alive.length !== unpaired.length;
   const wolves = unpaired.filter(p => roles[p.role].team === 'wolf').length;
@@ -90,6 +211,7 @@ export function winner(players: Player[], lovers: Record<number,number> = {}): W
   if (alive.length === 1 && whiteWolves) return 'whitewolf';
   if (killers || ravens || thieves || mindFlayers || charmers) return alive.length === 1 ? (killers ? 'serialkiller' : ravens ? 'raven' : thieves || charmers ? 'draw' : null) : null;
   if (!wolves) return whiteWolves || livingLovers ? null : 'village';
+  if (livingLovers) return null;
   return wolves >= alive.length - wolves ? 'wolf' : null;
 }
 export function voteWinner(players: Player[], executedId: number | null, lovers: Record<number,number> = {}): WinningSide | null {
@@ -120,17 +242,17 @@ export function tallyPack(votes: number[], limit: number, randomTies = false, ra
   return result;
 }
 /** Random card chances are relative weights; manually selected counts are untouched. */
-export function resolveRandomRoles(counts: Record<Role,number>, randomCounts: Record<'village'|'wolf'|'neutral',number>, order: Role[], chances: Partial<Record<Role,number>> = {}, unique = false, random = Math.random): Record<Role,number> {
+export function resolveRandomRoles(counts: Record<Role,number>, randomCounts: Record<'village'|'wolf'|'neutral',number>, order: Role[], chances: Partial<Record<Role,number>> = {}, unique = false, random = Math.random, excluded: readonly Role[] = [], powerWeight?: (role:Role, resolved:Record<Role,number>, remaining:number)=>number): Record<Role,number> {
   const resolved = {...counts};
   for (const team of ['village','wolf','neutral'] as const) {
     for (let i=0; i<randomCounts[team]; i++) {
-      const candidates = order.filter(role => roles[role].team===team && (!unique || resolved[role]===0)).map(role=>{
+      const candidates = order.filter(role => roles[role].team===team && !excluded.includes(role) && (!unique || resolved[role]===0)).map(role=>{
         const raw = chances?.[role];
         const weight = typeof raw==='number' && Number.isFinite(raw) ? Math.max(0,Math.min(100,raw)) : 100;
-        return {role,weight};
+        return {role,weight:weight * (powerWeight ? Math.max(0,powerWeight(role,resolved,randomCounts[team]-i)) : 1)};
       }).filter(candidate=>candidate.weight>0);
       const total=candidates.reduce((sum,candidate)=>sum+candidate.weight,0);
-      if (!total) throw new Error(`Not enough eligible ${team} roles for Random cards. Increase role chances or allow repeated roles.`);
+      if (!total) throw new Error(`Not enough eligible ${team} roles for Random cards. Enable more roles, increase role chances, or allow repeated roles.`);
       let draw=Math.max(0,Math.min(0.999999999999,random()))*total;
       let chosen=candidates[candidates.length-1].role;
       for (const candidate of candidates) { if (draw<candidate.weight) { chosen=candidate.role; break; } draw-=candidate.weight; }
@@ -163,7 +285,7 @@ export function randomLineup(playerCount: number, madmanCount = 0): Record<Role,
   return counts;
 }
 
-/** Resolve wolf attack, mayor protection and templar holy water together. */
+/** Resolve wolf attack, mayor protection and templar water together. */
 export function resolveNight(players: Player[], votes: number[], saves: number[], assembly: boolean, shots: {actor: number; target: number}[], guards: {actor: number; target: number}[] = [], bullets: {actor: number; target: number}[] = [], extra: { serials: {actor:number;target:number}[]; visitors: {actor:number;target:number}[]; shields: number[]; strong?: {actor:number;target:number}[]; lone?: {actor:number;target:number}[]; packVotes?: {actor:number;target:number}[]; enraged?: boolean; curses?: Record<number, number[]>; triggeredCurses?: number[]; thieves?: {actor:number;target:number}[]; successfulThefts?: {actor:number;target:number}[]; lovers?: Record<number,number>; madmen?: number[]; visitorDangerousRoles?: boolean; visitorAttackedTarget?: boolean; bodyguardProtectAll?: boolean; packAttackLimit?: number; randomPackTies?: boolean; ravenReflectAttackers?: boolean } = {serials:[],visitors:[],shields:[]}): Player[] {
   const killed = new Set<number>();
   const usedGuards = new Set<number>();
@@ -247,24 +369,28 @@ export function visitorsTo(visits: Visit[], target: number): number[] {
 export function applyIllness(players: Player[], doctorSaves: Record<number,number>, remaining: Record<number,number>, corrupted: number[] = [], startingNights = 3, doctorBonus = 2): {players: Player[]; remaining: Record<number,number>} {
   const next = {...remaining};
   const updated = players.map(p => {
-    if (!p.alive || p.role !== 'sickman' || corrupted.includes(p.id)) return p;
+    if (!p.alive || p.role !== 'sickman') return p;
     const visits = Object.values(doctorSaves).filter(target => target === p.id).length;
-    next[p.id] = (next[p.id] ?? startingNights) + visits * doctorBonus - 1;
+    const remainingNights = (next[p.id] ?? startingNights) + visits * doctorBonus - 1;
+    // A false illness still shows a believable countdown, but cannot kill.
+    if (corrupted.includes(p.id)) { next[p.id]=Math.max(0,remainingNights); return p; }
+    next[p.id] = remainingNights;
     return next[p.id] <= 0 ? {...p, alive:false} : p;
   });
   return {players: updated, remaining: next};
 }
 
-/** Convert living non-wolves targeted by a living Rabid Werewolf at the end of the night.
+/** Convert living non-wolves or let a living Lone Werewolf join the known Werewolves at the end of the night.
  * Protection and simultaneous-action precedence are reconstructed, not verified. */
 export function applyInfections(players: Player[], infections: Visit[]): { players: Player[]; converted: number[] } {
-  const converted = new Set<number>();
+  const converted = new Set<number>(), recruited = new Set<number>();
   for (const infection of infections) {
     const actor = players.find(p=>p.id===infection.actor && p.alive && p.role==='rabidwolf');
     const target = players.find(p=>p.id===infection.target && p.alive);
-    if (actor && target && roles[target.role].team !== 'wolf') converted.add(target.id);
+    if (actor && target && target.role==='lonewolf') recruited.add(target.id);
+    else if (actor && target && roles[target.role].team !== 'wolf') converted.add(target.id);
   }
-  return {players:players.map(p=>converted.has(p.id) ? {...p,role:'werewolf'} : p),converted:[...converted]};
+  return {players:players.map(p=>converted.has(p.id) ? {...p,role:'werewolf'} : recruited.has(p.id) ? {...p,joinedPack:true} : p),converted:[...converted]};
 }
 
 /** Correct predictions prepare a living Gambler to escape after surviving the next night. */
@@ -341,6 +467,22 @@ export function applyHypnosis(players: Player[], attempts: Visit[], already: num
   return [...result];
 }
 
+/** End a night: age old hypnosis, then apply successful new attempts for future nights. */
+export function advanceHypnosis(players: Player[], attempts: Visit[], previous: Record<number,number|null>, activeMadmen: number[], round: number, duration: number): { expires: Record<number,number|null>; corrupted: number[] } {
+  const expires: Record<number,number|null> = {};
+  const valid = new Set(applyHypnosis(players,[],Object.keys(previous).map(Number)));
+  for (const [key,end] of Object.entries(previous)) {
+    const id=Number(key);
+    if (valid.has(id) && (end===null || end>round)) expires[id]=end;
+  }
+  for (const id of applyHypnosis(players,attempts,[])) {
+    const end=duration===0 ? null : round+Math.max(1,Math.min(5,Math.floor(duration)));
+    const old=expires[id];
+    expires[id]=old===null || end===null ? null : Math.max(old ?? 0,end);
+  }
+  return {expires,corrupted:[...new Set([...applyHypnosis(players,[],activeMadmen),...Object.keys(expires).map(Number)])]};
+}
+
 /** A Chef needs two other living players to invite. */
 export function canChefAct(players: Player[], chefId: number): boolean {
   return players.filter(p=>p.alive && p.id!==chefId).length >= 2;
@@ -363,7 +505,19 @@ export function celebrityReveals(players: Player[], blocked: number[] = [], corr
 
 /** Madmen use an eligible village role as a disguise; the role itself remains visible. */
 export function isEligibleMadmanRole(role: Role): boolean {
-  return roles[role].team === 'village' && role !== 'villager' && role !== 'muted';
+  return roles[role].team === 'village' && role !== 'villager' && role !== 'muted' && role !== 'madman';
+}
+/** Replace each Madman card with a private village disguise before play starts. */
+export function disguiseMadmanCards(players:Player[], random = Math.random): {players:Player[]; madmen:number[]} {
+  const choices=(Object.keys(roles) as Role[]).filter(isEligibleMadmanRole);
+  const madmen:number[]=[];
+  const disguised=players.map(player=>{
+    if(player.role!=='madman') return player;
+    madmen.push(player.id);
+    const index=Math.min(choices.length-1,Math.max(0,Math.floor(random()*choices.length)));
+    return {...player,role:choices[index]};
+  });
+  return {players:disguised,madmen};
 }
 export function selectMadmen(players: Player[], count: number, random = Math.random): number[] {
   if (!Number.isInteger(count) || count < 0) throw new Error('Madman count must be a non-negative whole number.');

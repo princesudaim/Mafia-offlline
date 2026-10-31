@@ -1,6 +1,9 @@
 export type AvatarMap = Record<string, string>;
 export const playerKey = (name: string) => name.trim().toLocaleLowerCase();
-const avatarIds = [1,2,3,4,5,7,8,9,11,13,15,16,17,18,19];
+const avatarIds = [1,2,3,4,5,7,8,9,11,13,15,16,17,18,19,20,21,23,24];
+// Old copies of the moved portrait are removed from saved player profiles too.
+const movedAvatars = new Set(['./werewolf/avatars/player22.webp','./werewolf/avatars/player22-covered.webp']);
+export const resolveAvatar = (src: string) => movedAvatars.has(src) ? '' : src;
 export const avatarFiles = avatarIds.map(id => `./werewolf/avatars/player${id}.webp`);
 
 /** Assign an avatar to a player, reassigning every other current player using it. */

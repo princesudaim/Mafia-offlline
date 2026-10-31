@@ -15,7 +15,7 @@ test('village wins at zero wolves, wolves at parity',()=>{
  assert.equal(winner(players.map(p=>p.id===1?{...p,alive:false}:p)),'wolf');
 });
 test('deal respects counts and rejects invalid games',()=>{
- const counts={werewolf:1,villager:1,doctor:1,seer:1,chef:0,mayor:0,templar:0,muted:0,jester:0,necromancer:0,bodyguard:0,sheriff:0,serialkiller:0,survivor:0,visitor:0,psychic:0,celebrity:0,detective:0,instigator:0,strongwolf:0,sickman:0,lonewolf:0,wolfpup:0,journalist:0,raven:0,rabidwolf:0,whitewolf:0,gambler:0,mindflayer:0,intelligence:0,thief:0,police:0,hypnowolf:0,charmer:0};
+ const counts={madman:0,werewolf:1,villager:1,doctor:1,seer:1,chef:0,mayor:0,templar:0,muted:0,jester:0,necromancer:0,bodyguard:0,sheriff:0,serialkiller:0,survivor:0,visitor:0,psychic:0,celebrity:0,detective:0,instigator:0,strongwolf:0,sickman:0,lonewolf:0,wolfpup:0,journalist:0,raven:0,rabidwolf:0,whitewolf:0,gambler:0,mindflayer:0,intelligence:0,thief:0,police:0,hypnowolf:0,charmer:0};
  const p=deal(['A','B','C','D'],counts);
  assert.deepEqual(p.map(x=>x.role).sort(), ['doctor','seer','villager','werewolf']);
  assert.throws(()=>deal(['A','B','C'],counts));
@@ -124,7 +124,7 @@ test('enraged pack can attack two targets and protects tied cutoffs',()=>{
 });
 
 test('journalist is a village role that can be dealt',()=>{
- const counts={werewolf:1,villager:1,doctor:0,seer:0,chef:0,mayor:0,templar:0,muted:0,jester:0,necromancer:0,bodyguard:0,sheriff:0,serialkiller:0,survivor:0,visitor:0,psychic:0,celebrity:0,detective:0,instigator:0,strongwolf:0,sickman:0,lonewolf:0,wolfpup:0,journalist:2,raven:0,rabidwolf:0,whitewolf:0,gambler:0,mindflayer:0,intelligence:0,thief:0,police:0,hypnowolf:0,charmer:0};
+ const counts={madman:0,werewolf:1,villager:1,doctor:0,seer:0,chef:0,mayor:0,templar:0,muted:0,jester:0,necromancer:0,bodyguard:0,sheriff:0,serialkiller:0,survivor:0,visitor:0,psychic:0,celebrity:0,detective:0,instigator:0,strongwolf:0,sickman:0,lonewolf:0,wolfpup:0,journalist:2,raven:0,rabidwolf:0,whitewolf:0,gambler:0,mindflayer:0,intelligence:0,thief:0,police:0,hypnowolf:0,charmer:0};
  const p=deal(['A','B','C','D'],counts);
  assert.equal(p.filter(x=>x.role==='journalist').length,2);
 });
@@ -548,4 +548,78 @@ test('Random unique mode excludes manually selected roles and prior random draws
  assert.throws(()=>resolveRandomRoles(counts,{...randoms,village:3},order,{},true,()=>0),/Not enough eligible village roles/);
  const repeated=resolveRandomRoles(counts,{...randoms,village:2},order,{villager:100,doctor:0,seer:0},false,()=>0);
  assert.equal(repeated.villager,2);assert.equal(repeated.doctor,1);
+});
+
+test('disabled roles never appear on Random cards, independently of chances and manual picks',()=>{
+ const counts=Object.fromEntries(Object.keys(roles).map(r=>[r,0]));counts.werewolf=1;counts.doctor=1;
+ const order=['doctor','seer','villager','werewolf'];const randoms={village:2,wolf:0,neutral:0};
+ const result=resolveRandomRoles(counts,randoms,order,{},false,()=>0,['doctor','seer']);
+ assert.equal(result.doctor,1);assert.equal(result.seer,0);assert.equal(result.villager,2);
+ assert.throws(()=>resolveRandomRoles(counts,randoms,order,{},false,()=>0,['doctor','seer','villager']),/Enable more roles/);
+});
+
+test('hypnosis duration counts future nights, keeps Madmen, and clears on team change',async()=>{
+ const {advanceHypnosis}=await import('../src/werewolf-engine.ts');
+ const p=[{id:0,name:'Wolf',role:'hypnowolf',alive:true},{id:1,name:'Seer',role:'seer',alive:true},{id:2,name:'Doctor',role:'doctor',alive:true},{id:3,name:'Madman',role:'chef',alive:true}];
+ for(const duration of [1,2,3,4,5]){
+  let result=advanceHypnosis(p,[{actor:0,target:1},{actor:0,target:2}],{},[3],1,duration);
+  assert.deepEqual(new Set(result.corrupted),new Set([1,2,3]));
+  for(let night=2;night<=duration;night++){result=advanceHypnosis(p,[],result.expires,[3],night,duration);assert.deepEqual(new Set(result.corrupted),new Set([1,2,3]));}
+  result=advanceHypnosis(p,[],result.expires,[3],1+duration,duration);assert.deepEqual(result.corrupted,[3]);
+ }
+ let forever=advanceHypnosis(p,[{actor:0,target:1}],{},[3],1,0);
+ forever=advanceHypnosis(p,[],forever.expires,[3],99,0);assert.deepEqual(new Set(forever.corrupted),new Set([1,3]));
+ const converted=p.map(x=>x.id===1?{...x,role:'werewolf'}:x);forever=advanceHypnosis(converted,[],forever.expires,[3],100,0);
+ assert.deepEqual(forever.corrupted,[3]);assert.deepEqual(forever.expires,{});
+});
+
+test('new hypnosis can extend an existing spell without shortening permanent hypnosis',async()=>{
+ const {advanceHypnosis}=await import('../src/werewolf-engine.ts');const p=[{id:0,name:'Wolf',role:'hypnowolf',alive:true},{id:1,name:'Seer',role:'seer',alive:true}];
+ let r=advanceHypnosis(p,[{actor:0,target:1}],{},[],1,3);r=advanceHypnosis(p,[{actor:0,target:1}],r.expires,[],2,5);assert.equal(r.expires[1],7);
+ r=advanceHypnosis(p,[{actor:0,target:1}],r.expires,[],3,0);assert.equal(r.expires[1],null);
+ r=advanceHypnosis(p,[{actor:0,target:1}],r.expires,[],4,1);assert.equal(r.expires[1],null);
+});
+
+test('Madman cards use separate player slots and get secret village disguises',async()=>{
+ const {disguiseMadmanCards}=await import('../src/werewolf-engine.ts');
+ const dealt=[{id:0,name:'A',role:'madman',alive:true},{id:1,name:'B',role:'madman',alive:true},{id:2,name:'C',role:'werewolf',alive:true}];
+ let n=0;const result=disguiseMadmanCards(dealt,()=>n++===0?0:0.999);
+ assert.deepEqual(result.madmen,[0,1]);
+ assert.equal(result.players.length,3);
+ for(const player of result.players.slice(0,2))assert.ok(isEligibleMadmanRole(player.role));
+ assert.notEqual(result.players[0].role,result.players[1].role);
+ assert.equal(result.players[2].role,'werewolf');
+ assert.equal(dealt[0].role,'madman');
+});
+
+test('a Madman remains corrupted after hypnosis expires or death and loses it after infection',async()=>{
+ const {advanceHypnosis}=await import('../src/werewolf-engine.ts');
+ const players=[{id:0,name:'Madman',role:'doctor',alive:true},{id:1,name:'Wolf',role:'rabidwolf',alive:true}];
+ let result=advanceHypnosis(players,[{actor:1,target:0}],{},[0],1,1);
+ assert.deepEqual(result.corrupted,[0]);
+ result=advanceHypnosis(players,[],result.expires,[0],2,1);
+ assert.deepEqual(result.corrupted,[0]);
+ const dead=players.map(p=>p.id===0?{...p,alive:false}:p);
+ assert.deepEqual(advanceHypnosis(dead,[],{},[0],3,0).corrupted,[0]);
+ const infected=applyInfections(players,[{actor:1,target:0}]).players;
+ assert.equal(infected[0].role,'werewolf');
+ assert.deepEqual(advanceHypnosis(infected,[],{},[0],3,0).corrupted,[]);
+});
+
+test('fake Celebrity and Sick Man abilities have no real effect',()=>{
+ const p=[{id:0,name:'Star',role:'celebrity',alive:true},{id:1,name:'Sick',role:'sickman',alive:true},{id:2,name:'Other',role:'villager',alive:true}];
+ assert.deepEqual(celebrityReveals(p,[],[0],()=>0,1),{});
+ const result=applyIllness(p,{}, {1:1},[1],3,2);
+ assert.equal(result.players[1].alive,true);assert.equal(result.remaining[1],0);
+ const extended=applyIllness(p,{2:1},{1:2},[1],3,2);assert.equal(extended.remaining[1],3);assert.equal(extended.players[1].alive,true);
+ assert.equal(applyIllness(p,{}, {1:1},[],3,2).players[1].alive,false);
+});
+
+test('Random village cards can pick or exclude the Madman card',()=>{
+ const counts=Object.fromEntries(Object.keys(roles).map(r=>[r,0]));
+ const order=Object.keys(roles);const chances=Object.fromEntries(order.map(r=>[r,r==='madman'?100:0]));
+ const result=resolveRandomRoles(counts,{village:1,wolf:0,neutral:0},order,chances,true,()=>0);
+ assert.equal(result.madman,1);assert.equal(counts.madman,0);
+ assert.throws(()=>resolveRandomRoles(counts,{village:1,wolf:0,neutral:0},order,chances,true,()=>0,['madman']),/Not enough eligible/);
+ assert.throws(()=>resolveRandomRoles(counts,{village:2,wolf:0,neutral:0},order,chances,true,()=>0),/Not enough eligible/);
 });

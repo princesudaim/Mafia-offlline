@@ -10,6 +10,7 @@ export const CHARMER_SKINS = [
   { id: 'moonlight', name: 'Moonlight', image: 'charmer-moonlight.webp' },
   { id: 'starlight', name: 'Starlight', image: 'charmer-starlight.webp' },
   { id: 'sapphire', name: 'Sapphire', image: 'charmer-sapphire.webp' },
+  { id: 'sunrise', name: 'Sunrise', image: 'charmer-sunrise.webp' },
 ] as const;
 export type CharmerSkin = typeof CHARMER_SKINS[number]['id'];
 export const CHARMER_SKIN_KEY = 'werewolf.charmerSkin';

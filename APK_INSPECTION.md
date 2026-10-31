@@ -114,3 +114,7 @@ The footage shows an empty all-time rankings screen but does not establish its s
 ### Recovered phase audio
 
 The base APK contains three MP3 assets named for night, morning and voting. The PWA caches them for offline use and offers an optional sound setting, initially off, plus an in-game mute control. It loops the relevant track during each phase as a provisional reconstruction; the original playback timing and volume have not been verified. Mobile browsers may require a user tap to permit playback.
+
+## Madman card
+
+At the user’s request, the optional Madman count was replaced in the PWA by a selectable village role card. Each card takes one player slot and is assigned a random eligible village disguise before play. Existing hidden-identity and provisional ability-failure rules are preserved. The illustration comes from `assets/flutter_assets/assets/roles/madman.webp` in the original APK. Saved legacy Madman counts are no longer applied.

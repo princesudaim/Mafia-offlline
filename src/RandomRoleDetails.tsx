@@ -12,11 +12,14 @@ export default function RandomRoleDetails({team,settings,onSetting,onClose}:{tea
   <div className="role-detail-body"><div className="role-detail-frame">
    <span className="role-detail-team">{names[team]}</span><div className="random-detail-art" aria-hidden="true"><Shuffle size={32}/><span>?</span></div>
    <h2 id="random-detail-title">RANDOM {names[team]}</h2><div className="role-detail-divider"/>
-   <section className="role-details-description"><h3>DESCRIPTION</h3><p id="random-detail-description">Each Random card picks a role from this team when the game starts. Adjust each role’s chance in its own settings.</p></section>
+   <section className="role-details-description"><h3>DESCRIPTION</h3><p id="random-detail-description">Each Random card picks a role from this team when the game starts. Power points favor roles that bring the team closer to a balanced score. Role chances also affect the pick when enabled.</p></section>
    <div className="random-options"><h3>RANDOM ROLE SETTINGS</h3>
-    <label className="random-unique-row"><span><strong>One player per role</strong><small>Random cards will not repeat a role or choose one already added manually. Applies to all three teams; manually added duplicates are unchanged.</small></span>
+    <label className="random-unique-row"><span><strong>One player per role</strong><small>Random cards will not pick the same role twice or pick a role you added yourself. This works for all three teams. Roles you add yourself do not change.</small></span>
      <span className="setting-check"><input type="checkbox" aria-label="One player per random role" checked={settings.randomUniqueRoles} onChange={event=>onSetting('randomUniqueRoles',event.target.checked)}/><span className="setting-check-visual" aria-hidden="true"><Check className="setting-check-on" size={18}/><Minus className="setting-check-off" size={18}/></span></span>
-    </label><p>If there are not enough eligible roles, change the chances, remove Random cards, or turn this option off.</p>
+    </label>
+    <label className="random-unique-row"><span><strong>Random cards follow role chances</strong><small>When on, roles set to 0% cannot be picked. Higher numbers make a role more likely to be picked, together with the power balance. This works for all three teams.</small></span>
+     <span className="setting-check"><input type="checkbox" aria-label="Random cards follow role chances" checked={settings.randomFollowChances} onChange={event=>onSetting('randomFollowChances',event.target.checked)}/><span className="setting-check-visual" aria-hidden="true"><Check className="setting-check-on" size={18}/><Minus className="setting-check-off" size={18}/></span></span>
+    </label><p>If there are not enough roles to pick from, change the chances, remove some Random cards, or turn these settings off.</p>
    </div>
   </div></div>
  </dialog>;

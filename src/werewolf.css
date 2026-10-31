@@ -94,13 +94,13 @@ header>span{flex:1;min-width:0}.sound-control{min-height:44px;min-width:60px;pad
 .screen-nightIntro .modal,.screen-voteResult .modal,.screen-privateResult .modal,.screen-morning .modal{border:1px solid #35445b;border-radius:0;background:#080f17;padding:28px 22px;clip-path:polygon(12px 0,calc(100% - 12px) 0,100% 12px,100% calc(100% - 12px),calc(100% - 12px) 100%,12px 100%,0 calc(100% - 12px),0 12px)}
 .screen-nightIntro .symbol{width:60px;height:60px;border-radius:0;background:#0c141c;font-size:38px}.screen-nightIntro .modal h2{margin:24px 0 16px}.screen-nightIntro .modal p{padding:14px;background:#101821;border:1px solid #2e3d50}
 .screen-nightIntro .primary,.screen-pass .primary,.screen-privateResult .primary,.screen-morning .primary,.screen-voteResult .primary,.action .primary,.vote-page .primary{border-radius:0;background:linear-gradient(90deg,#f65a08,#d94b05);border:1px solid #ffa050;min-height:50px;font:700 16px system-ui,sans-serif;clip-path:polygon(7px 0,calc(100% - 7px) 0,100% 7px,100% calc(100% - 7px),calc(100% - 7px) 100%,7px 100%,0 calc(100% - 7px),0 7px)}
-.player-pass .pass-avatar{width:140px;height:140px;border:2px solid #ed7524;border-radius:0;clip-path:polygon(10px 0,calc(100% - 10px) 0,100% 10px,100% calc(100% - 10px),calc(100% - 10px) 100%,10px 100%,0 calc(100% - 10px),0 10px)}.player-pass h2{font:700 27px system-ui,sans-serif;margin:20px 0 6px}.player-pass .primary{margin-top:24px}
+.player-pass .pass-avatar{width:160px;height:160px;border:2px solid #ed7524;border-radius:0;clip-path:polygon(10px 0,calc(100% - 10px) 0,100% 10px,100% calc(100% - 10px),calc(100% - 10px) 100%,10px 100%,0 calc(100% - 10px),0 10px)}.player-pass h2{font:700 27px system-ui,sans-serif;margin:20px 0 6px}.player-pass .primary{margin-top:24px}
 .action{--action-color:#2bbf72;padding-bottom:calc(35px + env(safe-area-inset-bottom))}.action.action-team-wolf{--action-color:#ec4b52}.action.action-team-neutral{--action-color:#4c89ed}.action .role-art{width:min(42vw,180px);height:auto;aspect-ratio:3/4;margin:8px auto 18px;border:2px solid var(--action-color);border-radius:0}.action h2{color:var(--action-color);font:700 25px system-ui,sans-serif}.action .description{border:1px solid var(--action-color);border-radius:0;background:#0b141c;padding:16px}.action .description small{color:var(--action-color);font:700 13px system-ui,sans-serif;letter-spacing:.04em}.action .description p{font:15px/1.55 system-ui,sans-serif;color:#e5eaf0}
 .madman-explanation{margin:12px auto 0;color:#e9d9fa;font:13px/1.5 system-ui,sans-serif}.madman-explanation summary{display:inline-block;cursor:pointer;border:1px solid #a665d6;background:#21142b;color:#e8cafa;padding:9px 12px;font:700 12px system-ui,sans-serif}.madman-explanation p{border:1px solid #8250a4;padding:10px;color:#eee1fa!important}
 .wait-card{display:flex;flex-direction:column;align-items:center;gap:6px;margin:22px auto;padding:18px;width:145px;background:#f8f7f3;color:#f47c2a;border:2px solid #f9c9aa;border-radius:10px;font:13px system-ui,sans-serif}.wait-card strong{font-size:40px}.wait-card span{color:#626b78}
 .action .targets{grid-template-columns:repeat(4,minmax(0,1fr))}.vote-page .targets{grid-template-columns:repeat(3,minmax(0,1fr))}.action .target,.vote-page .target{padding:0;gap:0;min-width:0;min-height:44px;justify-content:flex-start;border-radius:0;background:#0a121b;opacity:1}.action .target:disabled,.vote-page .target:disabled{opacity:.62}.action .target.selected,.vote-page .target.selected{border:2px solid #ff912c;background:#2b2018}.action .target-avatar,.vote-page .target-avatar{width:100%;height:auto;aspect-ratio:1/1;border-radius:0;font:30px system-ui,sans-serif}.target-number{align-self:stretch;text-align:left;background:#091019;color:#ff9b45;padding:3px 5px;font:700 10px system-ui,sans-serif}.action .target strong,.vote-page .target strong{width:100%;padding:7px 3px;font:700 11px/1.2 system-ui,sans-serif;overflow-wrap:anywhere;white-space:normal}.voter-heading{display:flex;align-items:center;text-align:left;gap:12px;background:#09111a;border:1px solid #3b4a60;padding:10px}.voter-heading h2{margin:0;font:700 16px/1.3 system-ui,sans-serif}.voter-heading p{margin:4px 0 0}.voter-avatar{display:grid;place-items:center;width:50px;height:50px;flex:0 0 50px;border:1px solid #db6b25;background:#172533}.voter-avatar img{width:100%;height:100%;object-fit:cover}.discussion-screen .timer{width:200px;height:200px;border:8px solid #f36c13;background:#10182088;font:700 48px system-ui,sans-serif}.discussion-screen h2{margin:22px 0 0}.discussion-screen .secondary{max-width:250px}
 .role-turn-content{border:0;padding:0;margin:0;min-width:0}.role-turn-content:disabled{opacity:1}.hold-button{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;touch-action:none;user-select:none}.hold-button small{font:11px/1.2 system-ui,sans-serif;color:#fff;letter-spacing:0}.hold-button.holding{background:linear-gradient(90deg,#ffad58,#ed5908);transition:background 2s linear}
-.role-options{display:grid;gap:8px;margin-top:12px}.role-options label{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:48px;padding:10px;border:1px solid #344454;background:#101a25;color:#edf2f7;font:14px/1.4 system-ui,sans-serif}.role-options input{width:24px;height:24px;flex:0 0 24px;accent-color:#f36b17}.role-options p{line-height:1.5}
+.role-options{display:grid;gap:8px;margin-top:12px}.role-options label,.role-options .role-option-row{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:48px;padding:10px;border:1px solid #344454;background:#101a25;color:#edf2f7;font:14px/1.4 system-ui,sans-serif}.role-options input{width:24px;height:24px;flex:0 0 24px;accent-color:#f36b17}.role-options p{line-height:1.5}
 .role-options input[type=number]{width:56px;flex:0 0 56px;height:38px;padding:4px;color:#fff;background:#0b131d;border:1px solid #52677c;border-radius:4px;text-align:center;font:16px system-ui,sans-serif}
 .roster-add-slot{min-width:0;align-self:start;display:flex;flex-direction:column;gap:6px}.roster-add-slot .roster-add{width:100%;aspect-ratio:1/1.42}.random-player-button{min-height:44px;display:flex;align-items:center;justify-content:center;gap:6px;width:100%;border:1px solid #b46632;border-radius:6px;background:#24180f;color:#ffd2a2;font:700 12px/1 system-ui,sans-serif}.random-player-button:active{background:#3b2515}.random-player-button:focus-visible{outline:2px solid #ffad66;outline-offset:2px}
 .setup .roster-card{align-self:start}
@@ -129,23 +129,23 @@ header>span{flex:1;min-width:0}.sound-control{min-height:44px;min-width:60px;pad
 .role-skin-choice[aria-pressed=true] small{color:var(--detail-color)}
 .role-skin-options-four{grid-template-columns:repeat(2,minmax(0,1fr))}
 /* Game-settings checkboxes: clipped corners and a clear check / dash state. */
-:is(.role-settings-list,.random-options) .setting-check{position:relative;display:grid;place-items:center;width:52px;height:44px;flex:0 0 52px;cursor:pointer}
-:is(.role-settings-list,.random-options) .setting-check input[type=checkbox]{position:absolute;inset:0;width:100%;height:100%;margin:0;opacity:0;cursor:pointer;z-index:1}
-:is(.role-settings-list,.random-options) .setting-check-visual{position:relative;display:grid;place-items:center;width:50px;height:32px;color:#93a5bd;background:#36475d;clip-path:polygon(7px 0,calc(100% - 7px) 0,100% 7px,100% calc(100% - 7px),calc(100% - 7px) 100%,7px 100%,0 calc(100% - 7px),0 7px)}
-:is(.role-settings-list,.random-options) .setting-check-visual::before{content:'';position:absolute;inset:2px;background:#09111a;clip-path:polygon(6px 0,calc(100% - 6px) 0,100% 6px,100% calc(100% - 6px),calc(100% - 6px) 100%,6px 100%,0 calc(100% - 6px),0 6px)}
-:is(.role-settings-list,.random-options) .setting-check-visual svg{position:relative;z-index:1;stroke-width:2}
-:is(.role-settings-list,.random-options) .setting-check-on{display:none}
-:is(.role-settings-list,.random-options) .setting-check input:checked + .setting-check-visual{background:#e46b1d;color:#ff963b}
-:is(.role-settings-list,.random-options) .setting-check input:checked + .setting-check-visual::before{background:#28180e}
-:is(.role-settings-list,.random-options) .setting-check input:checked + .setting-check-visual .setting-check-on{display:block}
-:is(.role-settings-list,.random-options) .setting-check input:checked + .setting-check-visual .setting-check-off{display:none}
-:is(.role-settings-list,.random-options) .setting-check input:focus-visible + .setting-check-visual{outline:2px solid #fff;outline-offset:2px;filter:drop-shadow(0 0 4px #ffab68)}
+:is(.role-settings-list,.random-options,.role-options,.remember) .setting-check{position:relative;display:grid;place-items:center;width:52px;height:44px;flex:0 0 52px;cursor:pointer}
+:is(.role-settings-list,.random-options,.role-options,.remember) .setting-check input[type=checkbox]{position:absolute;inset:0;width:100%;height:100%;margin:0;opacity:0;cursor:pointer;z-index:1}
+:is(.role-settings-list,.random-options,.role-options,.remember) .setting-check-visual{position:relative;display:grid;place-items:center;width:50px;height:32px;color:#93a5bd;background:#36475d;clip-path:polygon(7px 0,calc(100% - 7px) 0,100% 7px,100% calc(100% - 7px),calc(100% - 7px) 100%,7px 100%,0 calc(100% - 7px),0 7px)}
+:is(.role-settings-list,.random-options,.role-options,.remember) .setting-check-visual::before{content:'';position:absolute;inset:2px;background:#09111a;clip-path:polygon(6px 0,calc(100% - 6px) 0,100% 6px,100% calc(100% - 6px),calc(100% - 6px) 100%,6px 100%,0 calc(100% - 6px),0 6px)}
+:is(.role-settings-list,.random-options,.role-options,.remember) .setting-check-visual svg{position:relative;z-index:1;stroke-width:2}
+:is(.role-settings-list,.random-options,.role-options,.remember) .setting-check-on{display:none}
+:is(.role-settings-list,.random-options,.role-options,.remember) .setting-check input:checked + .setting-check-visual{background:#e46b1d;color:#ff963b}
+:is(.role-settings-list,.random-options,.role-options,.remember) .setting-check input:checked + .setting-check-visual::before{background:#28180e}
+:is(.role-settings-list,.random-options,.role-options,.remember) .setting-check input:checked + .setting-check-visual .setting-check-on{display:block}
+:is(.role-settings-list,.random-options,.role-options,.remember) .setting-check input:checked + .setting-check-visual .setting-check-off{display:none}
+:is(.role-settings-list,.random-options,.role-options,.remember) .setting-check input:focus-visible + .setting-check-visual{outline:2px solid #fff;outline-offset:2px;filter:drop-shadow(0 0 4px #ffab68)}
 
 .random-role-card{cursor:pointer}
 .random-detail-art{display:flex;flex-direction:column;align-items:center;justify-content:center;width:min(56%,220px);aspect-ratio:3/4;margin:16px auto;background:var(--detail-dark);border:2px solid var(--detail-color);color:var(--detail-color)}
 .random-detail-art span{font:900 clamp(90px,25vw,150px)/1 system-ui,sans-serif}
 .random-options{text-align:left;margin-top:20px}.random-options h3{color:var(--detail-color);font:700 13px/1.3 system-ui,sans-serif}.random-unique-row{display:flex;align-items:center;gap:12px;min-height:60px;padding:10px;background:#101a25;border:1px solid #344454}.random-unique-row>span:first-child{flex:1;min-width:0}.random-unique-row strong,.random-unique-row small{display:block;font:600 14px/1.4 system-ui,sans-serif;color:#edf2f7;letter-spacing:0}.random-unique-row small{margin-top:5px;font-size:12px;font-weight:400;color:#aebbc4}.random-options p{color:#aebbc4;font:12px/1.5 system-ui,sans-serif}
-.chance-control{margin:14px 0;padding:14px;border:1px solid #344454;background:#101a25}.chance-heading{display:flex;align-items:center;justify-content:space-between;gap:10px;color:#edf2f7;font:600 14px/1.3 system-ui,sans-serif}.chance-heading output{min-width:52px;padding:5px;border:1px solid var(--detail-color);background:var(--detail-dark);color:var(--detail-color);text-align:center;font-weight:700}.chance-control input[type=range]{display:block;width:100%;height:44px;margin:4px 0;border-radius:99px;appearance:none;cursor:pointer;touch-action:none;background-size:100% 8px;background-repeat:no-repeat;background-position:center}.chance-control input[type=range]::-webkit-slider-thumb{appearance:none;width:26px;height:26px;border:3px solid #fff;border-radius:50%;background:var(--detail-color);box-shadow:0 0 0 4px var(--detail-dark)}.chance-control input[type=range]::-moz-range-thumb{width:20px;height:20px;border:3px solid #fff;border-radius:50%;background:var(--detail-color);box-shadow:0 0 0 4px var(--detail-dark)}.chance-control input[type=range]:focus-visible{outline:2px solid #ffb36e;outline-offset:7px}.chance-scale{display:flex;justify-content:space-between;color:#93a5b9;font:11px system-ui,sans-serif}.chance-control p{margin:10px 0 0;color:#aebbc4;font:12px/1.45 system-ui,sans-serif}
+.chance-control{margin:14px 0;padding:14px;border:1px solid #344454;background:#101a25}.chance-heading{display:flex;align-items:center;justify-content:space-between;gap:10px;color:#edf2f7;font:600 14px/1.3 system-ui,sans-serif}.chance-heading output{min-width:52px;padding:5px;border:1px solid var(--detail-color);background:var(--detail-dark);color:var(--detail-color);text-align:center;font-weight:700}.chance-control input[type=range]{display:block;width:100%;height:44px;background-color:transparent;margin:4px 0;border-radius:99px;appearance:none;cursor:pointer;touch-action:none;background-size:100% 8px;background-repeat:no-repeat;background-position:center}.chance-control input[type=range]::-webkit-slider-thumb{appearance:none;width:26px;height:26px;border:3px solid #fff;border-radius:50%;background:var(--detail-color);box-shadow:0 0 0 4px var(--detail-dark)}.chance-control input[type=range]::-moz-range-thumb{width:20px;height:20px;border:3px solid #fff;border-radius:50%;background:var(--detail-color);box-shadow:0 0 0 4px var(--detail-dark)}.chance-control input[type=range]:focus-visible{outline:2px solid #ffb36e;outline-offset:7px}.chance-scale{display:flex;justify-content:space-between;color:#93a5b9;font:11px system-ui,sans-serif}.chance-control p{margin:10px 0 0;color:#aebbc4;font:12px/1.45 system-ui,sans-serif}
 .distribution-button>span{margin-left:auto;color:#ffb678;font-size:18px}
 .distribution-options{overflow:hidden;padding:4px 2px 8px;animation:distribution-slide .22s ease-out}
 .distribution-options>p{margin:4px 2px 10px;color:#a5b4c8;font:12px/1.5 system-ui,sans-serif}
@@ -157,3 +157,229 @@ header>span{flex:1;min-width:0}.sound-control{min-height:44px;min-width:60px;pad
 .distribution-chance-setting{margin-top:9px}.distribution-chance-setting .setting-copy small{font:12px/1.4 system-ui,sans-serif}
 @keyframes distribution-slide{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
 @media(prefers-reduced-motion:reduce){.distribution-options{animation:none}}
+/* Phone-sized plus/minus controls for game-setting numbers. */
+.settings-number-control{display:flex;align-items:center;flex:0 0 auto;gap:3px}
+.settings-number-control button{display:grid;place-items:center;width:44px;height:44px;padding:0;border:1px solid #76513a;border-radius:5px;background:#20170f;color:#ffa75a;font:600 21px/1 system-ui,sans-serif}
+.settings-number-control button:active:not(:disabled){background:#49301e}
+.settings-number-control button:disabled{opacity:.35}
+.setting-row .settings-number-control input[type=number]{width:42px;height:44px;padding:3px;border:1px solid #485b71;border-radius:5px;background:#0b141e;color:#f5f7fa;text-align:center;font:700 16px/1 system-ui,sans-serif;appearance:textfield;-moz-appearance:textfield}
+.settings-number-control input::-webkit-inner-spin-button,.settings-number-control input::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
+.settings-number-control :is(button,input):focus-visible{outline:2px solid #ffb36e;outline-offset:2px}
+@media(max-width:360px){.number-setting{flex-wrap:wrap}.number-setting .settings-number-control{margin-left:auto}}
+
+/* Compact value controls, consistent across game and role settings. */
+.settings-number-control{gap:2px}
+.settings-number-control button{width:36px;height:40px;font-size:19px}
+.setting-row .settings-number-control input[type=number],.role-options .settings-number-control input[type=number]{width:36px;height:40px;flex:0 0 36px;padding:2px;border:1px solid #485b71;border-radius:4px;background:#0b141e;color:#f5f7fa;text-align:center;font:700 15px/1 system-ui,sans-serif;appearance:textfield;-moz-appearance:textfield}
+.role-options .settings-number-control button{border-color:var(--detail-color);background:var(--detail-dark);color:var(--detail-color)}
+.role-options .role-option-row>span:first-child{min-width:0;flex:1}
+.chance-control input[type=range]{background-color:transparent;border:0;box-shadow:none}
+.chance-control input[type=range]::-webkit-slider-runnable-track{height:8px;border:0;border-radius:99px;background:transparent}
+.chance-control input[type=range]::-moz-range-track{height:8px;border:0;border-radius:99px;background:transparent}
+.chance-control input[type=range]::-webkit-slider-thumb{margin-top:-9px}
+/* Angular settings steppers match the checked / unchecked settings controls. */
+.settings-number-control button,.role-options .settings-number-control button{position:relative;width:36px;height:40px;padding:0;border:0;background:transparent;color:#ff963b;opacity:1}
+.settings-number-control button:active:not(:disabled),.role-options .settings-number-control button:active:not(:disabled){background:transparent}
+.settings-number-control .number-control-glyph{position:relative;display:grid;place-items:center;width:36px;height:30px;background:#e46b1d;color:#ff963b;clip-path:polygon(6px 0,calc(100% - 6px) 0,100% 6px,100% calc(100% - 6px),calc(100% - 6px) 100%,6px 100%,0 calc(100% - 6px),0 6px)}
+.settings-number-control .number-control-glyph::before{content:'';position:absolute;inset:2px;background:#28180e;clip-path:polygon(5px 0,calc(100% - 5px) 0,100% 5px,100% calc(100% - 5px),calc(100% - 5px) 100%,5px 100%,0 calc(100% - 5px),0 5px)}
+.settings-number-control .number-control-glyph b{position:relative;font:600 18px/1 system-ui,sans-serif}
+.settings-number-control button:disabled .number-control-glyph{background:#36475d;color:#93a5bd}
+.settings-number-control button:disabled .number-control-glyph::before{background:#09111a}
+.settings-number-control button:active:not(:disabled) .number-control-glyph::before{background:#49301e}
+
+/* Show the same role power estimate privately during a player’s turn. */
+.action .role-art-frame{position:relative;width:min(42vw,180px);margin:8px auto 18px}.action .role-art-frame .role-art{width:100%;margin:0}.role-power-game{position:absolute;top:4px;right:4px;display:grid;place-items:center;min-width:25px;height:25px;padding:0 4px;border:1px solid #619f78;border-radius:4px;background:#10251bef;color:#eefdf2;font:700 13px/1 system-ui,sans-serif}.action-team-wolf .role-power-game{border-color:#b65a5d;background:#2d171be8}.action-team-neutral .role-power-game{border-color:#8b70ad;background:#20182be8}
+
+/* Small see-through number on each game avatar. */
+.avatar-grid .avatar-number{position:absolute;top:4px;left:4px;min-width:17px;padding:2px 3px;border-radius:3px;background:rgba(5,12,19,.55);color:rgba(255,255,255,.8);font:700 10px/1.2 system-ui,sans-serif;text-align:center;pointer-events:none}
+
+/* The original game's panels and controls use small cut-off corners. */
+.app :where(.home-button,.setup-icon-button,.setup-primary,.random-player-button,
+  .sheet-option,.avatar-grid button,.library-row,.library-tabs button,.name-field,
+  .player-form .remember,.delete-banner,.delete-banner button,.remove-roster,
+  .role-page .role-settings-panel,.role-page .setting-row,.role-page .setting-icon,
+  .role-page .distribution-button,.distribution-mode,.role-details-close,
+  .role-detail-team,.role-details-image,.random-detail-art,.role-detail-skins,
+  .role-detail-settings .role-options label,.role-detail-settings .role-option-row,
+  .role-skin-choice,.random-unique-row,.chance-control,.chance-heading output,
+  .role-detail-navigation button,.action .role-art,.action .description,
+  .action .target,.vote-page .target,.voter-heading,.voter-avatar,
+  .madman-explanation summary,.madman-explanation p,.wait-card,
+  .screen-nightIntro .symbol,.screen-nightIntro .modal p,.panel,.modal,
+  .primary,.secondary,header .back,.sound-control) {
+  border-radius:0;
+  clip-path:polygon(7px 0,calc(100% - 7px) 0,100% 7px,100% calc(100% - 7px),calc(100% - 7px) 100%,7px 100%,0 calc(100% - 7px),0 7px);
+}
+/* More specific rules take precedence over earlier screen-specific shapes. */
+.role-page .role-settings-panel,.role-page .distribution-button,
+.action .role-art,.action .description,.action .target,.vote-page .target,
+.avatar-sheet .avatar-grid button,.player-form .remember {
+  border-radius:0;
+  clip-path:polygon(7px 0,calc(100% - 7px) 0,100% 7px,100% calc(100% - 7px),calc(100% - 7px) 100%,7px 100%,0 calc(100% - 7px),0 7px);
+}
+/* Keep the avatar's camera badge outside the preview, as in the reference. */
+.player-form .avatar-preview{border-radius:0}
+.player-form .avatar-preview img{clip-path:polygon(8px 0,calc(100% - 8px) 0,100% 8px,100% calc(100% - 8px),calc(100% - 8px) 100%,8px 100%,0 calc(100% - 8px),0 8px)}
+/* Bevel the avatar preview border without cutting off its camera button. */
+.player-form .avatar-preview{border:0;background:transparent;isolation:isolate}
+.player-form .avatar-preview::before,.player-form .avatar-preview::after{content:'';position:absolute;pointer-events:none;clip-path:polygon(8px 0,calc(100% - 8px) 0,100% 8px,100% calc(100% - 8px),calc(100% - 8px) 100%,8px 100%,0 calc(100% - 8px),0 8px)}
+.player-form .avatar-preview::before{inset:0;background:#b44e1b;z-index:-2}
+.player-form .avatar-preview::after{inset:1px;background:#0c141e;z-index:-1}
+.player-form .avatar-preview img{width:calc(100% - 2px);height:calc(100% - 2px)}
+
+/* Restore only the missing diagonal pieces of each existing border. */
+:is(.role-page .role-settings-panel,.role-page .setting-row,.role-page .setting-icon,
+  .role-page .distribution-button,.distribution-mode,.role-section .section-title,
+  .role-page .role-info-button,.role-start-button,.role-detail-frame,
+  .role-options label,.role-options .role-option-row,.role-detail-skins,.role-skin-choice,
+  .random-unique-row,.chance-control,.setup-icon-button,.setup-primary,.roster-card,
+  .roster-add,.random-player-button,.sheet-option,.avatar-grid button,.library-row,
+  .name-field,.player-form .remember,.action .description,.action .target,
+  .vote-page .target,.voter-heading,.madman-explanation summary,.madman-explanation p,
+  .screen-nightIntro .modal,.screen-voteResult .modal,.screen-privateResult .modal,
+  .screen-morning .modal,.action .primary,.action .secondary,.screen-pass .primary,
+  .screen-nightIntro .primary,.screen-privateResult .primary,.screen-morning .primary,
+  .screen-voteResult .primary,.vote-page .primary){position:relative;--corner-outline:#42556a}
+:is(.role-page .role-settings-panel,.role-page .setting-row,.role-page .setting-icon,
+  .role-page .distribution-button,.distribution-mode,.role-section .section-title,
+  .role-page .role-info-button,.role-start-button,.role-detail-frame,
+  .role-options label,.role-options .role-option-row,.role-detail-skins,.role-skin-choice,
+  .random-unique-row,.chance-control,.setup-icon-button,.setup-primary,.roster-card,
+  .roster-add,.random-player-button,.sheet-option,.avatar-grid button,.library-row,
+  .name-field,.player-form .remember,.action .description,.action .target,
+  .vote-page .target,.voter-heading,.madman-explanation summary,.madman-explanation p,
+  .screen-nightIntro .modal,.screen-voteResult .modal,.screen-privateResult .modal,
+  .screen-morning .modal,.action .primary,.action .secondary,.screen-pass .primary,
+  .screen-nightIntro .primary,.screen-privateResult .primary,.screen-morning .primary,
+  .screen-voteResult .primary,.vote-page .primary)::after{
+  content:'';position:absolute;inset:-1px;z-index:3;pointer-events:none;
+  background:var(--corner-outline);
+  -webkit-mask:linear-gradient(#000 0 0) top left/9px 9px no-repeat,linear-gradient(#000 0 0) top right/9px 9px no-repeat,linear-gradient(#000 0 0) bottom left/9px 9px no-repeat,linear-gradient(#000 0 0) bottom right/9px 9px no-repeat;
+  mask:linear-gradient(#000 0 0) top left/9px 9px no-repeat,linear-gradient(#000 0 0) top right/9px 9px no-repeat,linear-gradient(#000 0 0) bottom left/9px 9px no-repeat,linear-gradient(#000 0 0) bottom right/9px 9px no-repeat;
+  clip-path:polygon(evenodd,
+    7px 0,calc(100% - 7px) 0,100% 7px,100% calc(100% - 7px),calc(100% - 7px) 100%,7px 100%,0 calc(100% - 7px),0 7px,7px 0,
+    8px 2px,2px 8px,2px calc(100% - 8px),8px calc(100% - 2px),calc(100% - 8px) calc(100% - 2px),calc(100% - 2px) calc(100% - 8px),calc(100% - 2px) 8px,calc(100% - 8px) 2px,8px 2px);
+}
+.role-page .distribution-button{--corner-outline:#a95d30}
+.distribution-mode-easy{--corner-outline:#258958}.distribution-mode-balanced{--corner-outline:#ae7739}.distribution-mode-hard{--corner-outline:#b94b4f}
+.role-section .section-title,.role-page .role-info-button{--corner-outline:var(--team-color)}
+.role-detail-frame,.role-skin-choice[aria-pressed=true]{--corner-outline:var(--detail-color)}
+.action .description{--corner-outline:var(--action-color)}
+.action .target.selected,.vote-page .target.selected,.avatar-grid button.chosen{--corner-outline:#ff912c}
+.setup-primary,.action .primary,.screen-pass .primary,.screen-nightIntro .primary,.screen-privateResult .primary,.screen-morning .primary,.screen-voteResult .primary,.vote-page .primary,.role-start-button:not(:disabled){--corner-outline:#ffa050}
+.roster-add,.random-player-button{--corner-outline:#b46632}
+.madman-explanation summary,.madman-explanation p{--corner-outline:#a665d6}
+/* Match the outline's cut size on larger frames, and keep the role artwork's
+   border visible along its diagonal corners too. */
+.role-detail-frame,.screen-nightIntro .modal,.screen-voteResult .modal,.screen-privateResult .modal,.screen-morning .modal{
+  clip-path:polygon(7px 0,calc(100% - 7px) 0,100% 7px,100% calc(100% - 7px),calc(100% - 7px) 100%,7px 100%,0 calc(100% - 7px),0 7px);
+}
+.action .role-art-frame .role-art{box-sizing:border-box}
+.action .role-art-frame::after{
+  content:'';position:absolute;inset:0;z-index:1;pointer-events:none;background:var(--action-color);
+  -webkit-mask:linear-gradient(#000 0 0) top left/9px 9px no-repeat,linear-gradient(#000 0 0) top right/9px 9px no-repeat,linear-gradient(#000 0 0) bottom left/9px 9px no-repeat,linear-gradient(#000 0 0) bottom right/9px 9px no-repeat;
+  mask:linear-gradient(#000 0 0) top left/9px 9px no-repeat,linear-gradient(#000 0 0) top right/9px 9px no-repeat,linear-gradient(#000 0 0) bottom left/9px 9px no-repeat,linear-gradient(#000 0 0) bottom right/9px 9px no-repeat;
+  clip-path:polygon(evenodd,7px 0,calc(100% - 7px) 0,100% 7px,100% calc(100% - 7px),calc(100% - 7px) 100%,7px 100%,0 calc(100% - 7px),0 7px,7px 0,8px 2px,2px 8px,2px calc(100% - 8px),8px calc(100% - 2px),calc(100% - 8px) calc(100% - 2px),calc(100% - 2px) calc(100% - 8px),calc(100% - 2px) 8px,calc(100% - 8px) 2px,8px 2px);
+}
+.role-power-game{z-index:2}
+
+/* Keep every roster portrait square, regardless of the source image's shape. */
+.roster-edit .roster-avatar{position:relative;flex:0 0 auto;min-height:0;overflow:hidden;aspect-ratio:1 / 1}
+.roster-edit .roster-avatar img{position:absolute;inset:0;display:block;width:100%;height:100%;object-fit:cover}
+
+/* Keep player cards the same size for square and portrait-shaped images. */
+.action .target,.vote-page .target{box-sizing:border-box;width:100%;height:100%;border-width:2px}
+.action .target-avatar,.vote-page .target-avatar{position:relative;display:grid;flex:0 0 auto;min-height:0;overflow:hidden;width:100%}
+.action .target-avatar img,.vote-page .target-avatar img{position:absolute;inset:0;display:block;width:100%;height:100%;object-fit:cover}
+.action .target strong,.vote-page .target strong{box-sizing:border-box;display:block;flex:0 0 26px;height:26px;padding:6px 3px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.avatar-sheet .avatar-grid button{position:relative;width:100%;min-width:0;aspect-ratio:1 / 1}
+.avatar-sheet .avatar-grid button img{position:absolute;inset:0;display:block;width:100%;height:100%;object-fit:cover}
+
+/* Excluded roles remain manually selectable, but cannot be drawn at random. */
+.role-page .role-random-excluded img { filter: brightness(.3) grayscale(.75); }
+.role-page .role-random-excluded strong { filter: brightness(.6); }
+.role-excluded-badge { position:absolute; left:50%; top:45%; transform:translate(-50%,-50%); z-index:2; padding:4px 6px; background:#13181de8; border:1px solid #d9ad77; color:#f5dfc7; font:700 11px Condensed,sans-serif; white-space:nowrap; pointer-events:none; }
+.role-hold-hint { color:#b9c4c9; font-size:12px; text-align:center; margin:10px 12px; }
+
+.role-page .role-info-button:not(.random-role-card) { -webkit-touch-callout:none; user-select:none; touch-action:pan-y pinch-zoom; }
+
+/* Pack-only cards: player numbers identify each wolf without changing votes. */
+.wolf-team-list { text-align:left; }
+.wolf-team-list small { color:#f1686c; font-weight:700; }
+.wolf-team-list div { margin:5px 0; }
+.wolf-team-list p { margin:9px 0 0; font-size:12px; color:#b7c2cb; }
+.wolf-team-key,.wolf-choice { display:inline-block; padding:2px 4px; color:#fff; background:var(--wolf-marker,#ad3339); border:1px solid #ffffff99; font:700 10px/1.15 system-ui,sans-serif; }
+.wolf-color-0{--wolf-marker:#b83038}.wolf-color-1{--wolf-marker:#b45b1d}.wolf-color-2{--wolf-marker:#7144ab}.wolf-color-3{--wolf-marker:#147b85}.wolf-color-4{--wolf-marker:#b33674}.wolf-color-5{--wolf-marker:#566ab0}.wolf-color-6{--wolf-marker:#428244}.wolf-color-7{--wolf-marker:#8c5945}
+.action .wolf-target-card{position:relative}.action .wolf-teammate{--corner-outline:#d43f48;border-color:#d43f48;background:#33181c}.action .wolf-teammate:disabled{opacity:1}.action .wolf-teammate strong{color:#ff666a}.action .wolf-teammate .target-avatar{border-bottom:2px solid #d43f48}
+.wolf-team-badge { position:absolute; z-index:2; right:4px; top:4px; padding:1px 3px; background:#ef555b; color:white; font:800 9px/1.2 system-ui,sans-serif; }
+.wolf-target-count { position:absolute; z-index:3; top:3px; left:3px; background:#c3313a; border:1px solid white; color:white; padding:1px 4px; font:800 10px/1.2 system-ui,sans-serif; }
+.wolf-choice-markers { position:absolute; z-index:3; left:3px; right:3px; bottom:28px; display:flex; flex-wrap:wrap; gap:2px; pointer-events:none; }
+.action .wolf-target-card.selected { --corner-outline:#eb5058; border-color:#eb5058; background:#481c20; }
+
+/* Private information uses the same angular, single-border popup across roles. */
+.private-info-backdrop{position:fixed;inset:0;z-index:100;display:flex;align-items:center;justify-content:center;padding:18px max(16px,env(safe-area-inset-right)) max(18px,env(safe-area-inset-bottom)) max(16px,env(safe-area-inset-left));background:#000d;--info-border:#41536c;--info-accent:#ff8628}
+.private-info-backdrop.info-gold{--info-border:#9c651c;--info-accent:#ef9c18}.private-info-backdrop.info-red{--info-border:#a7323d;--info-accent:#ed3d48}.private-info-backdrop.info-green{--info-border:#327b52;--info-accent:#43c778}
+.private-info{position:relative;isolation:isolate;width:min(100%,520px);max-height:calc(100dvh - 36px);overflow:auto;background:var(--info-border);clip-path:polygon(14px 0,calc(100% - 14px) 0,100% 14px,100% calc(100% - 14px),calc(100% - 14px) 100%,14px 100%,0 calc(100% - 14px),0 14px);color:#f4f6f9}
+.private-info::before{content:'';position:absolute;z-index:-1;inset:2px;background:#0a121b;clip-path:polygon(13px 0,calc(100% - 13px) 0,100% 13px,100% calc(100% - 13px),calc(100% - 13px) 100%,13px 100%,0 calc(100% - 13px),0 13px)}
+.private-info header{height:auto;min-height:58px;display:flex;align-items:center;gap:11px;padding:19px 20px 16px;border-bottom:1px solid var(--info-border);text-align:left}.private-info header svg{color:var(--info-accent);flex:none}.private-info header h2{margin:0;color:#f7f8fa;font:700 20px/1.1 Condensed,system-ui,sans-serif;letter-spacing:.02em}.private-info-body{min-height:135px;padding:22px 20px;text-align:center}.private-info-portraits{display:flex;justify-content:center;align-items:start;gap:14px;flex-wrap:wrap;margin-bottom:18px}.private-info-person{display:flex;flex-direction:column;align-items:center;gap:8px;max-width:100px;min-width:0}.private-info-person strong{font:700 14px/1.2 system-ui,sans-serif;overflow-wrap:anywhere}.private-info-avatar,.private-info-role-art{display:grid;place-items:center;position:relative;overflow:hidden;width:72px;height:82px;background:#131e29;border:2px solid #41536c;clip-path:polygon(10px 0,calc(100% - 10px) 0,100% 10px,100% calc(100% - 10px),calc(100% - 10px) 100%,10px 100%,0 calc(100% - 10px),0 10px);font:700 30px system-ui,sans-serif}.private-info-role-art{border-color:var(--info-accent)}.private-info-avatar img,.private-info-role-art img{width:100%;height:100%;object-fit:cover}.private-info-message{margin:0;padding:13px 10px;background:#101821;color:#e6eaf1;font:15px/1.45 system-ui,sans-serif;overflow-wrap:anywhere}.info-red .private-info-message{background:#260c10;color:#ffc6ca}.info-gold .private-info-message{background:#251807;color:#ffe3b2}.info-green .private-info-message{background:#0c2115;color:#d5f6df}.private-info footer{display:flex;justify-content:flex-end;padding:13px 20px 18px;border-top:1px solid var(--info-border)}.private-info-ok{min-width:76px;min-height:46px;padding:9px 18px;background:var(--info-accent);border:0;color:#fff;font:700 15px system-ui,sans-serif;clip-path:polygon(7px 0,calc(100% - 7px) 0,100% 7px,100% calc(100% - 7px),calc(100% - 7px) 100%,7px 100%,0 calc(100% - 7px),0 7px)}.private-info-ok:focus-visible{outline:3px solid #fff;outline-offset:-5px}
+.private-info-avatar::after,.private-info-role-art::after{content:'';position:absolute;inset:-1px;z-index:2;pointer-events:none;background:#41536c;-webkit-mask:linear-gradient(#000 0 0) top left/12px 12px no-repeat,linear-gradient(#000 0 0) top right/12px 12px no-repeat,linear-gradient(#000 0 0) bottom left/12px 12px no-repeat,linear-gradient(#000 0 0) bottom right/12px 12px no-repeat;mask:linear-gradient(#000 0 0) top left/12px 12px no-repeat,linear-gradient(#000 0 0) top right/12px 12px no-repeat,linear-gradient(#000 0 0) bottom left/12px 12px no-repeat,linear-gradient(#000 0 0) bottom right/12px 12px no-repeat;clip-path:polygon(evenodd,10px 0,calc(100% - 10px) 0,100% 10px,100% calc(100% - 10px),calc(100% - 10px) 100%,10px 100%,0 calc(100% - 10px),0 10px,10px 0,11px 2px,2px 11px,2px calc(100% - 11px),11px calc(100% - 2px),calc(100% - 11px) calc(100% - 2px),calc(100% - 2px) calc(100% - 11px),calc(100% - 2px) 11px,calc(100% - 11px) 2px,11px 2px)}
+.private-info-role-art::after{background:var(--info-accent)}
+/* Morning results: a clear, scrollable report with artwork for each death. */
+.morning-report{flex:1;display:flex;flex-direction:column;align-items:center;width:100%;padding:clamp(36px,8vh,80px) 20px calc(105px + env(safe-area-inset-bottom));text-align:center}
+.morning-title{margin:0 0 22px;font:800 clamp(32px,9vw,48px)/1 Condensed,system-ui,sans-serif;color:#b9d2e8;text-shadow:0 0 20px #25476a}.morning-title.death-title{color:#f14148;text-shadow:0 0 20px #a92330}
+.morning-empty{color:#dbe6ec;font-size:16px}.morning-deaths{width:100%;display:grid;gap:30px;margin:auto 0}.morning-death{padding:15px 0}.morning-portraits{display:flex;justify-content:center;align-items:center;gap:14px}.morning-victim,.morning-role{position:relative;width:min(33vw,160px);height:min(33vw,160px);background:#a82e38;clip-path:polygon(12px 0,calc(100% - 12px) 0,100% 12px,100% calc(100% - 12px),calc(100% - 12px) 100%,12px 100%,0 calc(100% - 12px),0 12px)}
+.morning-avatar{position:absolute;inset:2px;display:grid;place-items:center;overflow:hidden;background:#1b2935;color:#f2e6df;font:700 44px Condensed;clip-path:polygon(11px 0,calc(100% - 11px) 0,100% 11px,100% calc(100% - 11px),calc(100% - 11px) 100%,11px 100%,0 calc(100% - 11px),0 11px)}.morning-avatar img,.morning-role img{width:100%;height:100%;object-fit:cover}.morning-avatar img{filter:brightness(.48) sepia(.45)}.morning-dead-mark{position:absolute;inset:2px;display:grid;place-items:center;background:#4c08099c;color:#eb343e;font:800 clamp(55px,20vw,112px)/1 system-ui}.morning-dead-badge{position:absolute;bottom:5px;left:50%;transform:translateX(-50%);padding:3px 10px;background:#19080b;border:1px solid #e64149;color:#fff;font:700 11px Condensed}
+.morning-role{background:#329c65}.morning-role-wolf{background:#c93b43}.morning-role-neutral{background:#4e86d8}.morning-role img{position:absolute;inset:2px;width:calc(100% - 4px);height:calc(100% - 4px);clip-path:polygon(11px 0,calc(100% - 11px) 0,100% 11px,100% calc(100% - 11px),calc(100% - 11px) 100%,11px 100%,0 calc(100% - 11px),0 11px)}.morning-role span{position:absolute;bottom:2px;left:2px;right:2px;padding:7px 2px;background:#081016e8;color:white;font:700 14px Condensed;overflow-wrap:anywhere}
+.morning-death h3{margin:18px 0 4px;color:white;font:800 clamp(22px,6vw,30px) Condensed;overflow-wrap:anywhere}.morning-death>p{margin:0;color:#aebdd0;font:16px system-ui}.morning-news{width:100%;margin:14px 0 0;padding:12px 14px;background:#0c1520e8;border:1px solid #46576a;clip-path:polygon(8px 0,calc(100% - 8px) 0,100% 8px,100% calc(100% - 8px),calc(100% - 8px) 100%,8px 100%,0 calc(100% - 8px),0 8px);text-align:left}.morning-news h3{margin:0 0 6px;color:#ff9b4e;font:700 16px Condensed}.morning-news p{margin:5px 0;color:#e3e9ed;font-size:14px;overflow-wrap:anywhere}.morning-footer{position:fixed;z-index:9;bottom:0;left:50%;transform:translateX(-50%);width:min(100%,520px);padding:12px 20px calc(14px + env(safe-area-inset-bottom));background:#07101adf}.morning-ok{width:100%;min-height:54px;background:#d92932;color:#fff;border:2px solid #ff737a;clip-path:polygon(10px 0,calc(100% - 10px) 0,100% 10px,100% calc(100% - 10px),calc(100% - 10px) 100%,10px 100%,0 calc(100% - 10px),0 10px);font:800 22px Condensed;letter-spacing:.04em}
+/* Connect the chamfered edges without adding a second outline. */
+.morning-news,.morning-ok{position:relative;--morning-outline:#46576a}.morning-ok{--morning-outline:#ff737a}
+.morning-news::after,.morning-ok::after{content:'';position:absolute;inset:-1px;pointer-events:none;background:var(--morning-outline);-webkit-mask:linear-gradient(#000 0 0) top left/12px 12px no-repeat,linear-gradient(#000 0 0) top right/12px 12px no-repeat,linear-gradient(#000 0 0) bottom left/12px 12px no-repeat,linear-gradient(#000 0 0) bottom right/12px 12px no-repeat;mask:linear-gradient(#000 0 0) top left/12px 12px no-repeat,linear-gradient(#000 0 0) top right/12px 12px no-repeat,linear-gradient(#000 0 0) bottom left/12px 12px no-repeat,linear-gradient(#000 0 0) bottom right/12px 12px no-repeat;clip-path:polygon(evenodd,10px 0,calc(100% - 10px) 0,100% 10px,100% calc(100% - 10px),calc(100% - 10px) 100%,10px 100%,0 calc(100% - 10px),0 10px,10px 0,11px 2px,2px 11px,2px calc(100% - 11px),11px calc(100% - 2px),calc(100% - 11px) calc(100% - 2px),calc(100% - 2px) calc(100% - 11px),calc(100% - 2px) 11px,calc(100% - 11px) 2px,11px 2px)}
+.morning-news{clip-path:polygon(10px 0,calc(100% - 10px) 0,100% 10px,100% calc(100% - 10px),calc(100% - 10px) 100%,10px 100%,0 calc(100% - 10px),0 10px)}
+.role-options select{max-width:55%;min-height:40px;padding:5px 8px;color:#f5f7f9;background:#101c28;border:1px solid #52677c;font:14px system-ui,sans-serif}
+
+/* Public role reference: always the same list, never the current player's role. */
+.game-rulebook-button{position:fixed;top:max(8px,env(safe-area-inset-top));left:max(8px,env(safe-area-inset-left));z-index:40;display:grid;place-items:center;width:44px;height:44px;color:#ffd8a7;background:#101923;border:1px solid #8b623d;clip-path:polygon(7px 0,calc(100% - 7px) 0,100% 7px,100% calc(100% - 7px),calc(100% - 7px) 100%,7px 100%,0 calc(100% - 7px),0 7px)}
+.game-rulebook-button::after{content:'';position:absolute;inset:-1px;pointer-events:none;background:#b78352;-webkit-mask:linear-gradient(#000 0 0) top left/9px 9px no-repeat,linear-gradient(#000 0 0) top right/9px 9px no-repeat,linear-gradient(#000 0 0) bottom left/9px 9px no-repeat,linear-gradient(#000 0 0) bottom right/9px 9px no-repeat;mask:linear-gradient(#000 0 0) top left/9px 9px no-repeat,linear-gradient(#000 0 0) top right/9px 9px no-repeat,linear-gradient(#000 0 0) bottom left/9px 9px no-repeat,linear-gradient(#000 0 0) bottom right/9px 9px no-repeat;clip-path:polygon(evenodd,7px 0,calc(100% - 7px) 0,100% 7px,100% calc(100% - 7px),calc(100% - 7px) 100%,7px 100%,0 calc(100% - 7px),0 7px,7px 0,8px 2px,2px 8px,2px calc(100% - 8px),8px calc(100% - 2px),calc(100% - 8px) calc(100% - 2px),calc(100% - 2px) calc(100% - 8px),calc(100% - 2px) 8px,calc(100% - 8px) 2px,8px 2px)}
+@media(max-width:640px){.game-header{padding-left:calc(60px + env(safe-area-inset-left))}}
+.role-rulebook{width:min(620px,calc(100% - 20px));max-width:620px;max-height:calc(100dvh - 20px);padding:0;border:0;background:#9b6b43;color:#edf3f6;clip-path:polygon(12px 0,calc(100% - 12px) 0,100% 12px,100% calc(100% - 12px),calc(100% - 12px) 100%,12px 100%,0 calc(100% - 12px),0 12px);overflow:hidden}
+.role-rulebook::backdrop{background:#000c}.role-rulebook-inner{display:flex;flex-direction:column;max-height:calc(100dvh - 24px);margin:2px;background:#0a121b;clip-path:polygon(11px 0,calc(100% - 11px) 0,100% 11px,100% calc(100% - 11px),calc(100% - 11px) 100%,11px 100%,0 calc(100% - 11px),0 11px)}
+.role-rulebook-header{height:auto;min-height:62px;display:flex;gap:12px;align-items:center;padding:10px 13px;border-bottom:1px solid #5a4839;background:#111a25}.role-rulebook-header>svg{flex:none;color:#f7a551}.role-rulebook-header>div{flex:1;min-width:0}.role-rulebook-header h2{margin:0;color:white;font:700 20px/1.1 Condensed,system-ui,sans-serif}.role-rulebook-header p{margin:4px 0 0;color:#a9bac7;font:12px system-ui,sans-serif}.role-rulebook-close{display:grid;place-items:center;flex:none;width:44px;height:44px;border:1px solid #5a6a78;background:#111d29;color:#fff;clip-path:polygon(6px 0,calc(100% - 6px) 0,100% 6px,100% calc(100% - 6px),calc(100% - 6px) 100%,6px 100%,0 calc(100% - 6px),0 6px)}
+.role-rulebook-content{overflow-y:auto;overscroll-behavior:contain;padding:12px 14px 22px}.role-rulebook-note{margin:0 0 10px;color:#aab9c7;font:13px/1.4 system-ui,sans-serif}.role-rulebook-safe{color:#eac794}.role-rulebook-search{display:flex;align-items:center;gap:8px;border:1px solid #3d5164;background:#101e2a;padding:0 10px;color:#e2a26f}.role-rulebook-search input{width:100%;min-width:0;height:42px;color:white;background:transparent;border:0;outline:0;font:15px system-ui,sans-serif}.role-rulebook-search:focus-within{border-color:#ffaa65}
+.role-rulebook-team{--book-team:#49bc79;margin:16px 0 0}.role-rulebook-wolf{--book-team:#ef6069}.role-rulebook-neutral{--book-team:#7ba7ed}.role-rulebook-team h3{display:flex;justify-content:space-between;margin:0;padding:9px 10px;color:var(--book-team);border-left:3px solid var(--book-team);background:#15202a;font:700 16px/1.2 Condensed,system-ui,sans-serif}.role-rulebook-team h3 span{color:#d0d9df;font:12px system-ui,sans-serif}.role-rulebook-entry{padding:10px 6px;border-bottom:1px solid #253442;text-align:left;color:#dce5eb;font:14px/1.5 system-ui,sans-serif;overflow-wrap:anywhere}.role-rulebook-entry h4{display:inline;margin:0;color:var(--book-team);font:700 14px system-ui,sans-serif}.role-rulebook-entry p{display:inline;margin:0;font:inherit}.role-rulebook-empty{color:#c2cbd2;text-align:center;padding:15px}.game-rulebook-button:focus-visible,.role-rulebook-close:focus-visible{outline:3px solid #fff;outline-offset:-4px}
+@media(max-width:640px){.morning-report{padding-top:max(64px,8vh,calc(56px + env(safe-area-inset-top)))}}
+
+/* Avatar portraits need a real beveled frame: clipping a square border alone
+   cuts away the four diagonal edges. The inset portrait leaves one outline. */
+.player-pass .pass-avatar,.voter-avatar,.private-info-avatar{
+  position:relative;isolation:isolate;overflow:hidden;border:0;border-radius:0;
+  background:var(--avatar-frame,#41536c);
+  clip-path:polygon(10px 0,calc(100% - 10px) 0,100% 10px,100% calc(100% - 10px),calc(100% - 10px) 100%,10px 100%,0 calc(100% - 10px),0 10px);
+}
+.player-pass .pass-avatar{--avatar-frame:#ed7524}
+.voter-avatar{--avatar-frame:#db6b25}
+.player-pass .pass-avatar::before,.voter-avatar::before,.private-info-avatar::before{
+  content:'';position:absolute;inset:2px;z-index:-1;pointer-events:none;background:#131e29;
+  clip-path:polygon(9px 0,calc(100% - 9px) 0,100% 9px,100% calc(100% - 9px),calc(100% - 9px) 100%,9px 100%,0 calc(100% - 9px),0 9px);
+}
+.player-pass .pass-avatar img,.voter-avatar img,.private-info-avatar img{
+  position:absolute;inset:2px;display:block;width:calc(100% - 4px);height:calc(100% - 4px);object-fit:cover;border-radius:0;
+  clip-path:polygon(9px 0,calc(100% - 9px) 0,100% 9px,100% calc(100% - 9px),calc(100% - 9px) 100%,9px 100%,0 calc(100% - 9px),0 9px);
+}
+.private-info-avatar::after{content:none}
+/* The picker also keeps its chosen/unselected border around every portrait. */
+.avatar-sheet .avatar-grid button{border:0;padding:2px;background:#34414b}
+.avatar-sheet .avatar-grid button.chosen{background:#ff8a25}
+.avatar-sheet .avatar-grid button::after{content:none}
+.avatar-sheet .avatar-grid button img{display:block;clip-path:polygon(6px 0,calc(100% - 6px) 0,100% 6px,100% calc(100% - 6px),calc(100% - 6px) 100%,6px 100%,0 calc(100% - 6px),0 6px)}
+
+/* Private, pass-and-play messages never appear in the morning report. */
+.friend-message-compose{display:flex;flex-direction:column;gap:8px;margin:12px 0;padding:12px;text-align:left;background:#171b23;border:1px solid #a16d36;color:#f6e3c9}
+.friend-message-compose label,.friend-reply>span{font:700 14px/1.3 system-ui,sans-serif;color:#ffd099}
+.friend-message-compose textarea,.friend-reply textarea{display:block;width:100%;min-height:80px;padding:10px;resize:vertical;border:1px solid #59697b;border-radius:0;background:#08111b;color:white;font:16px/1.4 system-ui,sans-serif}
+.friend-message-compose p,.friend-reply small{margin:0;color:#b4c3cf;font:12px/1.4 system-ui,sans-serif;letter-spacing:normal}
+.friend-message-compose button,.friend-reply-send{align-self:flex-start;min-height:44px;padding:8px 15px;border:1px solid #e9a65d;background:#8e4c1c;color:#fff;font:700 14px system-ui,sans-serif}
+.friend-message-compose [role=status]{color:#a8e5b9;font:13px system-ui,sans-serif}.friend-reply{display:flex;flex-direction:column;gap:7px;text-align:left;margin-top:15px}.private-info footer{gap:10px;flex-wrap:wrap}.friend-reply-send{align-self:auto}
+
+.private-info-message{white-space:pre-wrap}
+/* One short idea per line makes role instructions easier to read. */
+.role-details-description #role-details-description,.action .description p,.role-rulebook-entry p{white-space:pre-line}
